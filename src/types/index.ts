@@ -40,6 +40,46 @@ export interface DocstringInfo {
 }
 
 /**
+ * Language-specific configuration
+ */
+export interface LanguageConfiguration {
+  /** Enable DocuFold for this language */
+  enabled: boolean;
+  /** Allow folding of single-line docstrings */
+  foldSingleLine: boolean;
+  /** Custom regex patterns for docstring detection */
+  customPatterns: string[];
+}
+
+/**
+ * Performance optimization settings
+ */
+export interface PerformanceSettings {
+  /** Maximum file size in bytes for processing */
+  maxFileSize: number;
+  /** Cache timeout in milliseconds */
+  cacheTimeout: number;
+  /** Debounce delay for text changes in milliseconds */
+  debounceDelay: number;
+  /** Enable performance logging for debugging */
+  enablePerformanceLogging: boolean;
+}
+
+/**
+ * Advanced behavior settings
+ */
+export interface AdvancedSettings {
+  /** Respect existing user folding when auto-folding */
+  respectUserFolding: boolean;
+  /** Preserve folding state when saving files */
+  preserveFoldingOnSave: boolean;
+  /** Delay before auto-folding on file open (milliseconds) */
+  autoFoldDelay: number;
+  /** Enable contextual folding based on cursor position */
+  enableContextualFolding: boolean;
+}
+
+/**
  * Configuration options for DocuFold
  */
 export interface DocuFoldConfiguration {
@@ -57,6 +97,26 @@ export interface DocuFoldConfiguration {
   foldOnOpen: boolean;
   /** Enable hover preview */
   enableHoverPreview: boolean;
+  /** Language-specific settings */
+  languageSettings: Record<string, LanguageConfiguration>;
+  /** Performance optimization settings */
+  performanceSettings: PerformanceSettings;
+  /** Advanced behavior settings */
+  advancedSettings: AdvancedSettings;
+}
+
+/**
+ * Configuration validation result
+ */
+export interface ConfigurationValidationResult {
+  /** Whether the configuration is valid */
+  isValid: boolean;
+  /** Validation errors */
+  errors: string[];
+  /** Validation warnings */
+  warnings: string[];
+  /** Sanitized configuration */
+  sanitizedConfig?: DocuFoldConfiguration | undefined;
 }
 
 /**
