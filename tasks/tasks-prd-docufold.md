@@ -14,6 +14,9 @@ Based on PRD: `prd-docufold.md`
 - `test/extension.test.ts` - Basic extension functionality tests
 - `.eslintrc.json` - ESLint configuration for code quality
 - `resources/README.md` - Documentation for extension assets and resources
+- `esbuild.js` - Build pipeline configuration using esbuild for bundling
+- `.vscode/tasks.json` - VSCode build tasks integration
+- `.vscode/launch.json` - VSCode debugging and launch configuration
 - `src/providers/foldingRangeProvider.ts` - Core folding range provider implementation
 - `src/detectors/docstringDetector.ts` - Language-specific docstring detection engine
 - `src/services/configurationService.ts` - Settings and configuration management
@@ -44,7 +47,7 @@ Based on PRD: `prd-docufold.md`
   - [x] 1.2 Configure TypeScript with proper tsconfig.json for extension development
   - [x] 1.3 Setup testing framework with Mocha and VSCode extension test runner
   - [x] 1.4 Configure package.json with extension metadata, activation events, and commands
-  - [ ] 1.5 Setup build pipeline with webpack or esbuild for extension bundling
+  - [x] 1.5 Setup build pipeline with webpack or esbuild for extension bundling
   - [ ] 1.6 Create basic folder structure (src/, test/, out/) and initial files
   - [ ] 1.7 Setup development and debugging configuration in .vscode/launch.json
 
