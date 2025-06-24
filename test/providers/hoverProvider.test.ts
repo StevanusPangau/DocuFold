@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { DocuFoldHoverProvider } from '@/providers/hoverProvider';
+import { DocuFoldHoverProvider } from '../../src/providers/hoverProvider';
 
 suite('DocuFoldHoverProvider Test Suite', () => {
   let hoverProvider: DocuFoldHoverProvider;

@@ -1,6 +1,6 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-import { FoldingCommands } from '@/commands/foldingCommands';
+import { FoldingCommands } from '../../src/commands/foldingCommands';
 
 suite('FoldingCommands Test Suite', () => {
   let mockContext: vscode.ExtensionContext;

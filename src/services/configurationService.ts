@@ -359,11 +359,19 @@ export class ConfigurationService {
     const config = vscode.workspace.getConfiguration(ConfigurationService.CONFIGURATION_SECTION, resource);
     const inspect = config.inspect(key as string);
 
-    if (!inspect) return 'default';
+    if (!inspect) {
+      return 'default';
+    }
 
-    if (inspect.workspaceFolderValue !== undefined) return 'folder';
-    if (inspect.workspaceValue !== undefined) return 'workspace';
-    if (inspect.globalValue !== undefined) return 'user';
+    if (inspect.workspaceFolderValue !== undefined) {
+      return 'folder';
+    }
+    if (inspect.workspaceValue !== undefined) {
+      return 'workspace';
+    }
+    if (inspect.globalValue !== undefined) {
+      return 'user';
+    }
     return 'default';
   }
 

@@ -353,7 +353,7 @@ suite('ConfigurationService Tests', () => {
       });
 
       // Mock configuration change event
-      mockWorkspaceConfig.get.callsFake((key: string, defaultValue: any) => defaultValue);
+      mockWorkspaceConfig.get.callsFake((_key: string, defaultValue: any) => defaultValue);
 
       // Simulate configuration change
       const configChangeEvent = {
