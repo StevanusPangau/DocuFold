@@ -1,0 +1,147 @@
+{
+  "name": "docufold",
+  "displayName": "DocuFold",
+  "description": "Automatically fold docstrings in your code to improve readability and focus",
+  "version": "0.0.1",
+  "publisher": "docufold",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other",
+    "Formatters"
+  ],
+  "keywords": [
+    "docstring",
+    "fold",
+    "folding",
+    "documentation",
+    "python",
+    "javascript",
+    "typescript"
+  ],
+  "activationEvents": [
+    "onLanguage:python",
+    "onLanguage:javascript",
+    "onLanguage:typescript",
+    "onLanguage:java",
+    "onLanguage:csharp",
+    "onLanguage:php"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "docufold.toggleAutoFold",
+        "title": "Toggle Auto-fold",
+        "category": "DocuFold"
+      },
+      {
+        "command": "docufold.foldAllDocstrings",
+        "title": "Fold All Docstrings",
+        "category": "DocuFold"
+      },
+      {
+        "command": "docufold.unfoldAllDocstrings",
+        "title": "Unfold All Docstrings",
+        "category": "DocuFold"
+      },
+      {
+        "command": "docufold.foldCurrentDocstring",
+        "title": "Fold Current Docstring",
+        "category": "DocuFold"
+      },
+      {
+        "command": "docufold.unfoldCurrentDocstring",
+        "title": "Unfold Current Docstring",
+        "category": "DocuFold"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "docufold.toggleAutoFold",
+        "key": "ctrl+shift+d ctrl+shift+t",
+        "mac": "cmd+shift+d cmd+shift+t"
+      },
+      {
+        "command": "docufold.foldAllDocstrings",
+        "key": "ctrl+shift+d ctrl+shift+f",
+        "mac": "cmd+shift+d cmd+shift+f"
+      },
+      {
+        "command": "docufold.unfoldAllDocstrings",
+        "key": "ctrl+shift+d ctrl+shift+u",
+        "mac": "cmd+shift+d cmd+shift+u"
+      }
+    ],
+    "configuration": {
+      "title": "DocuFold",
+      "properties": {
+        "docufold.autoFoldEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable/disable automatic folding of docstrings when opening files"
+        },
+        "docufold.previewLength": {
+          "type": "number",
+          "default": 60,
+          "minimum": 20,
+          "maximum": 200,
+          "description": "Maximum character length for docstring preview text"
+        },
+        "docufold.includePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/*.py",
+            "**/*.js",
+            "**/*.ts",
+            "**/*.jsx",
+            "**/*.tsx",
+            "**/*.java",
+            "**/*.cs",
+            "**/*.php"
+          ],
+          "description": "File patterns to include for docstring folding"
+        },
+        "docufold.excludePatterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [
+            "**/node_modules/**",
+            "**/dist/**",
+            "**/build/**",
+            "**/*.min.*"
+          ],
+          "description": "File patterns to exclude from docstring folding"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "vscode-test"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.6",
+    "@types/node": "18.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "@vscode/test-cli": "^0.0.4",
+    "@vscode/test-electron": "^2.3.8",
+    "eslint": "^8.56.0",
+    "glob": "^11.0.3",
+    "mocha": "^11.7.0",
+    "typescript": "^5.3.3"
+  }
+}
