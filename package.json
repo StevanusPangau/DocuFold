@@ -3,9 +3,9 @@
   "displayName": "DocuFold",
   "description": "Automatically fold docstrings in your code to improve readability and focus",
   "version": "0.0.1",
-  "publisher": "docufold",
+  "publisher": "katzu",
   "author": {
-    "name": "DocuFold Team"
+    "name": "Stevanus Pangau"
   },
   "license": "MIT",
   "homepage": "https://github.com/docufold/docufold",
@@ -88,17 +88,32 @@
       {
         "command": "docufold.toggleAutoFold",
         "key": "ctrl+shift+d ctrl+shift+t",
-        "mac": "cmd+shift+d cmd+shift+t"
+        "mac": "cmd+shift+d cmd+shift+t",
+        "when": "editorTextFocus"
       },
       {
         "command": "docufold.foldAllDocstrings",
         "key": "ctrl+shift+d ctrl+shift+f",
-        "mac": "cmd+shift+d cmd+shift+f"
+        "mac": "cmd+shift+d cmd+shift+f",
+        "when": "editorTextFocus"
       },
       {
         "command": "docufold.unfoldAllDocstrings",
         "key": "ctrl+shift+d ctrl+shift+u",
-        "mac": "cmd+shift+d cmd+shift+u"
+        "mac": "cmd+shift+d cmd+shift+u",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "docufold.foldCurrentDocstring",
+        "key": "ctrl+shift+d ctrl+shift+c",
+        "mac": "cmd+shift+d cmd+shift+c",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "docufold.unfoldCurrentDocstring",
+        "key": "ctrl+shift+d ctrl+shift+o",
+        "mac": "cmd+shift+d cmd+shift+o",
+        "when": "editorTextFocus"
       }
     ],
     "configuration": {
@@ -162,6 +177,52 @@
           "description": "Show docstring preview on hover when folded"
         }
       }
+    },
+    "menus": {
+      "editor/context": [
+        {
+          "command": "docufold.foldCurrentDocstring",
+          "when": "editorTextFocus",
+          "group": "folding@1"
+        },
+        {
+          "command": "docufold.unfoldCurrentDocstring",
+          "when": "editorTextFocus",
+          "group": "folding@2"
+        },
+        {
+          "command": "docufold.foldAllDocstrings",
+          "when": "editorTextFocus",
+          "group": "folding@3"
+        },
+        {
+          "command": "docufold.unfoldAllDocstrings",
+          "when": "editorTextFocus",
+          "group": "folding@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "docufold.toggleAutoFold",
+          "when": "true"
+        },
+        {
+          "command": "docufold.foldAllDocstrings",
+          "when": "editorIsOpen"
+        },
+        {
+          "command": "docufold.unfoldAllDocstrings",
+          "when": "editorIsOpen"
+        },
+        {
+          "command": "docufold.foldCurrentDocstring",
+          "when": "editorTextFocus"
+        },
+        {
+          "command": "docufold.unfoldCurrentDocstring",
+          "when": "editorTextFocus"
+        }
+      ]
     }
   },
   "scripts": {
@@ -181,6 +242,7 @@
     "@types/glob": "^8.1.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/sinon": "^17.0.3",
     "@types/vscode": "^1.74.0",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
@@ -191,6 +253,7 @@
     "glob": "^11.0.3",
     "mocha": "^11.7.0",
     "rimraf": "^6.0.1",
+    "sinon": "^18.0.1",
     "typescript": "^5.3.3"
   }
 }

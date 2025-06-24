@@ -20,14 +20,17 @@ Based on PRD: `prd-docufold.md`
 - `src/types/index.ts` - TypeScript type definitions and interfaces
 - `src/utils/languageUtils.ts` - Language detection and pattern utilities
 - `src/utils/performanceUtils.ts` - Performance optimization utilities (cache, debounce, etc.)
-- `src/detectors/docstringDetector.ts` - Language-specific docstring detection engine (placeholder)
-- `src/providers/foldingRangeProvider.ts` - Core folding range provider implementation (placeholder)
+- `src/detectors/docstringDetector.ts` - Language-specific docstring detection engine with 8+ language support
+- `src/providers/foldingRangeProvider.ts` - Core folding range provider implementation with auto-folding
+- `src/providers/hoverProvider.ts` - Hover provider for extended docstring previews
 - `src/services/configurationService.ts` - Settings and configuration management (placeholder)
-- `src/services/statusBarService.ts` - Status bar integration and indicators (placeholder)
-- `src/commands/foldingCommands.ts` - Command palette and manual folding commands (placeholder)
+- `src/services/statusBarService.ts` - Status bar integration with auto-fold status and document stats
+- `src/commands/foldingCommands.ts` - Complete command palette and manual folding commands implementation
 - `test/extension.test.ts` - Main extension functionality tests
 - `test/providers/foldingRangeProvider.test.ts` - Unit tests for folding provider
 - `test/detectors/docstringDetector.test.ts` - Unit tests for docstring detection
+- `test/providers/hoverProvider.test.ts` - Unit tests for hover provider functionality
+- `test/commands/foldingCommands.test.ts` - Unit tests for command implementations
 - `test/services/configurationService.test.ts` - Unit tests for configuration service
 - `README.md` - Extension documentation and usage guide
 - `CHANGELOG.md` - Version history and release notes
@@ -74,18 +77,18 @@ Based on PRD: `prd-docufold.md`
   - [x] 3.7 Add error handling and fallback mechanisms
   - [x] 3.8 Create comprehensive tests for folding provider functionality
 
-- [ ] 4.0 User Interface & Commands Integration
+- [x] 4.0 User Interface & Commands Integration
 
-  - [ ] 4.1 Implement "DocuFold: Toggle Auto-fold" command
-  - [ ] 4.2 Implement "DocuFold: Fold All Docstrings" command
-  - [ ] 4.3 Implement "DocuFold: Unfold All Docstrings" command
-  - [ ] 4.4 Implement "DocuFold: Fold Current Docstring" command
-  - [ ] 4.5 Implement "DocuFold: Unfold Current Docstring" command
-  - [ ] 4.6 Create status bar item with current folding status display
-  - [ ] 4.7 Configure keyboard shortcuts with default key bindings
-  - [ ] 4.8 Add context menu integration for fold/unfold actions
-  - [ ] 4.9 Implement hover tooltips for folded docstrings with extended preview
-  - [ ] 4.10 Create comprehensive tests for all commands and UI interactions
+  - [x] 4.1 Implement "DocuFold: Toggle Auto-fold" command
+  - [x] 4.2 Implement "DocuFold: Fold All Docstrings" command
+  - [x] 4.3 Implement "DocuFold: Unfold All Docstrings" command
+  - [x] 4.4 Implement "DocuFold: Fold Current Docstring" command
+  - [x] 4.5 Implement "DocuFold: Unfold Current Docstring" command
+  - [x] 4.6 Create status bar item with current folding status display
+  - [x] 4.7 Configure keyboard shortcuts with default key bindings
+  - [x] 4.8 Add context menu integration for fold/unfold actions
+  - [x] 4.9 Implement hover tooltips for folded docstrings with extended preview
+  - [x] 4.10 Create comprehensive tests for all commands and UI interactions
 
 - [ ] 5.0 Configuration & Settings Management
 

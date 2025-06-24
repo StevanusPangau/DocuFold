@@ -74,15 +74,19 @@ export interface DocuFoldRange extends vscode.FoldingRange {
  */
 export interface DocumentStatus {
   /** Document URI */
-  uri: vscode.Uri;
+  uri?: vscode.Uri;
   /** Number of detected docstrings */
   docstringCount: number;
   /** Number of currently folded docstrings */
   foldedCount: number;
+  /** Language of the document */
+  language: string;
+  /** File name */
+  fileName: string;
   /** Whether auto-folding is enabled for this document */
-  autoFoldEnabled: boolean;
+  autoFoldEnabled?: boolean;
   /** Last update timestamp */
-  lastUpdated: Date;
+  lastUpdated?: Date;
 }
 
 /**
