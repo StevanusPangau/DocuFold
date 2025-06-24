@@ -4,12 +4,25 @@
   "description": "Automatically fold docstrings in your code to improve readability and focus",
   "version": "0.0.1",
   "publisher": "docufold",
+  "author": {
+    "name": "DocuFold Team"
+  },
+  "license": "MIT",
+  "homepage": "https://github.com/docufold/docufold",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/docufold/docufold.git"
+  },
+  "bugs": {
+    "url": "https://github.com/docufold/docufold/issues"
+  },
   "engines": {
     "vscode": "^1.74.0"
   },
   "categories": [
     "Other",
-    "Formatters"
+    "Formatters",
+    "Visualization"
   ],
   "keywords": [
     "docstring",
@@ -18,15 +31,29 @@
     "documentation",
     "python",
     "javascript",
-    "typescript"
+    "typescript",
+    "java",
+    "csharp",
+    "php",
+    "code-folding",
+    "readability",
+    "productivity",
+    "developer-tools"
   ],
+  "galleryBanner": {
+    "color": "#1e1e1e",
+    "theme": "dark"
+  },
+  "icon": "resources/icon.png",
   "activationEvents": [
     "onLanguage:python",
     "onLanguage:javascript",
     "onLanguage:typescript",
     "onLanguage:java",
     "onLanguage:csharp",
-    "onLanguage:php"
+    "onLanguage:php",
+    "onLanguage:jsx-tags",
+    "onLanguage:tsx-tags"
   ],
   "main": "./out/extension.js",
   "contributes": {
@@ -118,6 +145,21 @@
             "**/*.min.*"
           ],
           "description": "File patterns to exclude from docstring folding"
+        },
+        "docufold.enableStatusBar": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show DocuFold status in the status bar"
+        },
+        "docufold.foldOnOpen": {
+          "type": "boolean",
+          "default": true,
+          "description": "Automatically fold docstrings when opening a file"
+        },
+        "docufold.enableHoverPreview": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show docstring preview on hover when folded"
         }
       }
     }
