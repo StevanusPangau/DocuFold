@@ -1,22 +1,29 @@
 import * as vscode from 'vscode';
 import { DocstringInfo, DocstringPattern, SupportedLanguage } from '@/types';
 import { detectLanguage } from '@/utils/languageUtils';
+import { TTLCache, debounce, PerformanceTimer } from '@/utils/performanceUtils';
+
+// Cache key interface removed as it's not directly used (cache key is created as string)
 
 /**
- * Main docstring detector class
+ * Main docstring detector class with extensible pattern registry and performance optimizations
  */
 export class DocstringDetector {
-  private patterns: Map<SupportedLanguage, DocstringPattern> = new Map();
+  private patterns: Map<SupportedLanguage, DocstringPattern[]> = new Map();
+  private cache: TTLCache<string, DocstringInfo[]> = new TTLCache(5 * 60 * 1000); // 5 minutes
+  private performanceTimer: PerformanceTimer = new PerformanceTimer();
+  private debouncedCacheCleanup: () => void;
 
   constructor() {
     this.initializePatterns();
+    this.debouncedCacheCleanup = debounce(() => this.cache.cleanup(), 30000); // Cleanup every 30 seconds
   }
 
   /**
    * Initialize language patterns for supported languages
    */
   private initializePatterns(): void {
-    // Python docstring patterns
+    // Python docstring patterns (multiple patterns per language)
     this.registerPattern({
       language: 'python',
       startPattern: /^\s*(""")/,
@@ -70,6 +77,15 @@ export class DocstringDetector {
       multiline: false,
     });
 
+    // C# block comment documentation
+    this.registerPattern({
+      language: 'csharp',
+      startPattern: /^\s*(\/\*\*)/,
+      endPattern: /(\*\/)\s*$/,
+      singleLinePattern: /^\s*(\/\*\*.+\*\/)\s*$/,
+      multiline: true,
+    });
+
     // PHP documentation patterns
     this.registerPattern({
       language: 'php',
@@ -99,130 +115,86 @@ export class DocstringDetector {
   }
 
   /**
-   * Detect all docstrings in a document
+   * Detect all docstrings in a document with caching and performance optimization
    * @param document - VSCode text document
    * @returns Array of detected docstring information
    */
   async detectDocstrings(document: vscode.TextDocument): Promise<DocstringInfo[]> {
+    // Start performance measurement
+    this.performanceTimer.start();
+
     const language = detectLanguage(document);
     if (!language) {
+      this.performanceTimer.stop();
       return [];
     }
 
-    const docstrings: DocstringInfo[] = [];
+    // Create cache key
+    const cacheKey = this.createCacheKey(document, language);
+
+    // Check cache first
+    const cached = this.cache.get(cacheKey);
+    if (cached) {
+      this.performanceTimer.stop();
+      return cached;
+    }
+
+    // Detect docstrings
+    const docstrings = await this.performDetection(document, language);
+
+    // Cache results
+    this.cache.set(cacheKey, docstrings);
+
+    // Trigger debounced cleanup
+    this.debouncedCacheCleanup();
+
+    const elapsed = this.performanceTimer.stop();
+
+    // Log performance for large files
+    if (document.lineCount > 1000) {
+      console.log(`DocuFold: Detected ${docstrings.length} docstrings in ${elapsed.toFixed(2)}ms for ${document.fileName}`);
+    }
+
+    return docstrings;
+  }
+
+  /**
+   * Perform actual docstring detection based on language
+   * @param document - VSCode text document
+   * @param language - Detected language
+   * @returns Array of detected docstrings
+   */
+  private async performDetection(document: vscode.TextDocument, language: SupportedLanguage): Promise<DocstringInfo[]> {
+    const patterns = this.patterns.get(language);
+    if (!patterns || patterns.length === 0) {
+      return [];
+    }
+
     const text = document.getText();
     const lines = text.split('\n');
-
-    if (language === 'python') {
-      docstrings.push(...this.detectPythonDocstrings(document, lines));
-    } else if (['javascript', 'typescript', 'java', 'php', 'jsx-tags', 'tsx-tags'].includes(language)) {
-      docstrings.push(...this.detectBlockCommentDocstrings(document, lines, language));
-    } else if (language === 'csharp') {
-      docstrings.push(...this.detectCSharpDocstrings(document, lines));
-    }
-
-    return docstrings;
-  }
-
-  /**
-   * Detect Python docstrings (triple quotes """ and ''', single line)
-   * @param document - VSCode text document
-   * @param lines - Array of document lines
-   * @returns Array of detected Python docstrings
-   */
-  private detectPythonDocstrings(document: vscode.TextDocument, lines: string[]): DocstringInfo[] {
     const docstrings: DocstringInfo[] = [];
-    let i = 0;
 
-    while (i < lines.length) {
-      const line = lines[i];
-      if (!line) {
-        i++;
-        continue;
-      }
-
-      // Check for triple quote start (""" or ''')
-      const tripleQuoteMatch = line.match(/^\s*("""|''')/);
-
-      if (tripleQuoteMatch && tripleQuoteMatch[1]) {
-        const quoteType = tripleQuoteMatch[1];
-        const startPos = new vscode.Position(i, tripleQuoteMatch.index || 0);
-
-        // Check if it's a single line docstring
-        const singleLineMatch = line.match(new RegExp(`^\\s*(${quoteType}.+${quoteType})\\s*$`));
-
-        if (singleLineMatch && singleLineMatch[1]) {
-          // Single line docstring
-          const endPos = new vscode.Position(i, line.length);
-          const content = singleLineMatch[1];
-          const preview = this.extractPreview(content, quoteType);
-
-          docstrings.push({
-            startPosition: startPos,
-            endPosition: endPos,
-            content,
-            preview,
-            language: 'python',
-            isSingleLine: true,
-          });
-
-          i++;
-        } else {
-          // Multi-line docstring - find the end
-          let endLine = i + 1;
-          let found = false;
-
-          while (endLine < lines.length && !found) {
-            const endLineContent = lines[endLine];
-            if (endLineContent && endLineContent.includes(quoteType)) {
-              found = true;
-            } else {
-              endLine++;
-            }
-          }
-
-          if (found && lines[endLine]) {
-            const endPos = new vscode.Position(endLine, lines[endLine]!.length);
-            const contentLines = lines.slice(i, endLine + 1);
-            const content = contentLines.join('\n');
-            const preview = this.extractPreview(content, quoteType);
-
-            docstrings.push({
-              startPosition: startPos,
-              endPosition: endPos,
-              content,
-              preview,
-              language: 'python',
-              isSingleLine: false,
-            });
-
-            i = endLine + 1;
-          } else {
-            // Unclosed docstring, skip
-            i++;
-          }
-        }
+    // Use pattern-based detection for extensibility
+    for (const pattern of patterns) {
+      if (pattern.multiline) {
+        docstrings.push(...this.detectMultilineDocstrings(document, lines, language, pattern));
       } else {
-        i++;
+        docstrings.push(...this.detectSingleLineDocstrings(document, lines, language, pattern));
       }
     }
 
-    return docstrings;
+    return this.removeDuplicates(docstrings);
   }
 
   /**
-   * Detect JSDoc/block comment docstrings (/** */ patterns)
-   * Used for JavaScript, TypeScript, Java, and PHP
+   * Detect multi-line docstrings using a specific pattern
    * @param document - VSCode text document
    * @param lines - Array of document lines
    * @param language - Target language
-   * @returns Array of detected block comment docstrings
+   * @param pattern - Detection pattern
+   * @returns Array of detected docstrings
    */
-  private detectBlockCommentDocstrings(
-    document: vscode.TextDocument,
-    lines: string[],
-    language: SupportedLanguage
-  ): DocstringInfo[] {
+  private detectMultilineDocstrings(_document: vscode.TextDocument, lines: string[], language: SupportedLanguage, pattern: DocstringPattern): DocstringInfo[] {
     const docstrings: DocstringInfo[] = [];
     let i = 0;
 
@@ -233,51 +205,17 @@ export class DocstringDetector {
         continue;
       }
 
-      // Check for /** start pattern
-      const startMatch = line.match(/^\s*(\/\*\*)/);
-
+      const startMatch = line.match(pattern.startPattern);
       if (startMatch && startMatch[1]) {
         const startPos = new vscode.Position(i, startMatch.index || 0);
 
-        // Check if it's a single line docstring (/** comment */)  
-        const singleLineMatch = line.match(/^\s*(\/\*\*.+\*\/)\s*$/);
-
-        if (singleLineMatch && singleLineMatch[1]) {
-          // Single line docstring
-          const endPos = new vscode.Position(i, line.length);
-          const content = singleLineMatch[1];
-          const preview = this.extractBlockCommentPreview(content);
-
-          docstrings.push({
-            startPosition: startPos,
-            endPosition: endPos,
-            content,
-            preview,
-            language,
-            isSingleLine: true,
-          });
-
-          i++;
-        } else {
-          // Multi-line docstring - find the closing */  
-          let endLine = i;
-          let found = false;
-
-          // Continue searching from current line if */ is not on the same line
-          while (endLine < lines.length && !found) {
-            const currentLine = lines[endLine];
-            if (currentLine && currentLine.includes('*/')) {
-              found = true;
-            } else {
-              endLine++;
-            }
-          }
-
-          if (found && lines[endLine]) {
-            const endPos = new vscode.Position(endLine, lines[endLine]!.length);
-            const contentLines = lines.slice(i, endLine + 1);
-            const content = contentLines.join('\n');
-            const preview = this.extractBlockCommentPreview(content);
+        // Check for single line pattern first
+        if (pattern.singleLinePattern) {
+          const singleLineMatch = line.match(pattern.singleLinePattern);
+          if (singleLineMatch && singleLineMatch[1]) {
+            const endPos = new vscode.Position(i, line.length);
+            const content = singleLineMatch[1];
+            const preview = this.extractPreviewByLanguage(content, language);
 
             docstrings.push({
               startPosition: startPos,
@@ -285,14 +223,45 @@ export class DocstringDetector {
               content,
               preview,
               language,
-              isSingleLine: false,
+              isSingleLine: true,
             });
 
-            i = endLine + 1;
-          } else {
-            // Unclosed docstring, skip
             i++;
+            continue;
           }
+        }
+
+        // Multi-line detection
+        let endLine = i;
+        let found = false;
+
+        while (endLine < lines.length && !found) {
+          const currentLine = lines[endLine];
+          if (currentLine && pattern.endPattern.test(currentLine)) {
+            found = true;
+          } else {
+            endLine++;
+          }
+        }
+
+        if (found && lines[endLine]) {
+          const endPos = new vscode.Position(endLine, lines[endLine]!.length);
+          const contentLines = lines.slice(i, endLine + 1);
+          const content = contentLines.join('\n');
+          const preview = this.extractPreviewByLanguage(content, language);
+
+          docstrings.push({
+            startPosition: startPos,
+            endPosition: endPos,
+            content,
+            preview,
+            language,
+            isSingleLine: false,
+          });
+
+          i = endLine + 1;
+        } else {
+          i++;
         }
       } else {
         i++;
@@ -303,12 +272,14 @@ export class DocstringDetector {
   }
 
   /**
-   * Detect C# XML documentation (/// patterns)
+   * Detect single-line docstrings using a specific pattern (C# /// comments)
    * @param document - VSCode text document
    * @param lines - Array of document lines
-   * @returns Array of detected C# XML documentation
+   * @param language - Target language
+   * @param pattern - Detection pattern
+   * @returns Array of detected docstrings
    */
-  private detectCSharpDocstrings(document: vscode.TextDocument, lines: string[]): DocstringInfo[] {
+  private detectSingleLineDocstrings(_document: vscode.TextDocument, lines: string[], language: SupportedLanguage, pattern: DocstringPattern): DocstringInfo[] {
     const docstrings: DocstringInfo[] = [];
     let i = 0;
 
@@ -319,17 +290,15 @@ export class DocstringDetector {
         continue;
       }
 
-      // Check for /// start pattern
-      const startMatch = line.match(/^\s*(\/\/\/)/);
-
+      const startMatch = line.match(pattern.startPattern);
       if (startMatch && startMatch[1]) {
         const startPos = new vscode.Position(i, startMatch.index || 0);
         let endLine = i;
 
-        // Find consecutive /// lines
+        // Find consecutive lines with the same pattern (for C# /// comments)
         while (endLine + 1 < lines.length) {
           const nextLine = lines[endLine + 1];
-          if (nextLine && nextLine.match(/^\s*\/\/\//)) {
+          if (nextLine && pattern.startPattern.test(nextLine)) {
             endLine++;
           } else {
             break;
@@ -339,14 +308,14 @@ export class DocstringDetector {
         const endPos = new vscode.Position(endLine, lines[endLine]!.length);
         const contentLines = lines.slice(i, endLine + 1);
         const content = contentLines.join('\n');
-        const preview = this.extractCSharpPreview(content);
+        const preview = this.extractPreviewByLanguage(content, language);
 
         docstrings.push({
           startPosition: startPos,
           endPosition: endPos,
           content,
           preview,
-          language: 'csharp',
+          language,
           isSingleLine: i === endLine,
         });
 
@@ -357,6 +326,52 @@ export class DocstringDetector {
     }
 
     return docstrings;
+  }
+
+  /**
+   * Extract preview text based on language
+   * @param content - Full docstring content
+   * @param language - Target language
+   * @returns Preview text
+   */
+  private extractPreviewByLanguage(content: string, language: SupportedLanguage): string {
+    switch (language) {
+      case 'python':
+        return this.extractPythonPreview(content);
+      case 'csharp':
+        return this.extractCSharpPreview(content);
+      case 'javascript':
+      case 'typescript':
+      case 'java':
+      case 'php':
+      case 'jsx-tags':
+      case 'tsx-tags':
+        return this.extractBlockCommentPreview(content);
+      default:
+        return this.extractGenericPreview(content);
+    }
+  }
+
+  /**
+   * Extract preview text from Python docstrings
+   * @param content - Full docstring content
+   * @returns Preview text
+   */
+  private extractPythonPreview(content: string): string {
+    // Remove triple quotes and get the first meaningful line
+    let preview = content.replace(/"""|'''/g, '').trim();
+
+    // Get first non-empty line
+    const lines = preview.split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed) {
+        preview = trimmed;
+        break;
+      }
+    }
+
+    return this.limitPreviewLength(preview, 'Docstring');
   }
 
   /**
@@ -378,13 +393,7 @@ export class DocstringDetector {
       }
     }
 
-    // Limit preview length
-    const maxLength = 60;
-    if (preview.length > maxLength) {
-      preview = preview.substring(0, maxLength - 3) + '...';
-    }
-
-    return preview || 'Documentation';
+    return this.limitPreviewLength(preview, 'Documentation');
   }
 
   /**
@@ -418,66 +427,139 @@ export class DocstringDetector {
       }
     }
 
-    // Limit preview length
-    const maxLength = 60;
-    if (preview.length > maxLength) {
-      preview = preview.substring(0, maxLength - 3) + '...';
-    }
-
-    return preview || 'Documentation';
+    return this.limitPreviewLength(preview, 'Documentation');
   }
 
   /**
-   * Extract preview text from docstring content
-   * @param content - Full docstring content
-   * @param quoteType - Type of quote used (""" or ''')
+   * Extract generic preview text
+   * @param content - Full content
    * @returns Preview text
    */
-  private extractPreview(content: string, quoteType: string): string {
-    // Remove the quote marks and get the first meaningful line
-    let preview = content.replace(new RegExp(quoteType, 'g'), '').trim();
-
-    // Get first non-empty line
-    const lines = preview.split('\n');
+  private extractGenericPreview(content: string): string {
+    const lines = content.split('\n');
     for (const line of lines) {
       const trimmed = line.trim();
       if (trimmed) {
-        preview = trimmed;
-        break;
+        return this.limitPreviewLength(trimmed, 'Documentation');
       }
     }
-
-    // Limit preview length (will be configurable later)
-    const maxLength = 60;
-    if (preview.length > maxLength) {
-      preview = preview.substring(0, maxLength - 3) + '...';
-    }
-
-    return preview || 'Docstring';
+    return 'Documentation';
   }
 
   /**
-   * Register a new language pattern
+   * Limit preview text length
+   * @param preview - Preview text
+   * @param fallback - Fallback text if preview is empty
+   * @returns Limited preview text
+   */
+  private limitPreviewLength(preview: string, fallback: string): string {
+    const maxLength = 60;
+    if (!preview.trim()) {
+      return fallback;
+    }
+    if (preview.length > maxLength) {
+      return preview.substring(0, maxLength - 3) + '...';
+    }
+    return preview;
+  }
+
+  /**
+   * Remove duplicate docstrings based on position
+   * @param docstrings - Array of docstrings
+   * @returns Array without duplicates
+   */
+  private removeDuplicates(docstrings: DocstringInfo[]): DocstringInfo[] {
+    const seen = new Set<string>();
+    return docstrings.filter((docstring) => {
+      const key = `${docstring.startPosition.line}-${docstring.startPosition.character}-${docstring.endPosition.line}-${docstring.endPosition.character}`;
+      if (seen.has(key)) {
+        return false;
+      }
+      seen.add(key);
+      return true;
+    });
+  }
+
+  /**
+   * Create cache key for a document
+   * @param document - VSCode text document
+   * @param language - Detected language
+   * @returns Cache key string
+   */
+  private createCacheKey(document: vscode.TextDocument, language: SupportedLanguage): string {
+    return `${document.uri.toString()}-${document.version}-${language}`;
+  }
+
+  /**
+   * Register a new language pattern (extensible registry)
    * @param pattern - Docstring pattern for a language
    */
   registerPattern(pattern: DocstringPattern): void {
-    this.patterns.set(pattern.language, pattern);
+    const existing = this.patterns.get(pattern.language) || [];
+    existing.push(pattern);
+    this.patterns.set(pattern.language, existing);
   }
 
   /**
-   * Get pattern for a specific language
+   * Register multiple patterns for a language
    * @param language - Target language
-   * @returns Docstring pattern or undefined
+   * @param patterns - Array of patterns
    */
-  getPattern(language: SupportedLanguage): DocstringPattern | undefined {
-    return this.patterns.get(language);
+  registerPatterns(language: SupportedLanguage, patterns: DocstringPattern[]): void {
+    const existing = this.patterns.get(language) || [];
+    existing.push(...patterns);
+    this.patterns.set(language, existing);
+  }
+
+  /**
+   * Get patterns for a specific language
+   * @param language - Target language
+   * @returns Array of docstring patterns
+   */
+  getPatterns(language: SupportedLanguage): DocstringPattern[] {
+    return this.patterns.get(language) || [];
   }
 
   /**
    * Get all registered patterns
    * @returns Map of all language patterns
    */
-  getAllPatterns(): Map<SupportedLanguage, DocstringPattern> {
+  getAllPatterns(): Map<SupportedLanguage, DocstringPattern[]> {
     return new Map(this.patterns);
+  }
+
+  /**
+   * Clear cache
+   */
+  clearCache(): void {
+    this.cache.clear();
+  }
+
+  /**
+   * Get cache statistics
+   * @returns Cache size and performance info
+   */
+  getCacheStats(): { size: number; hitRate?: number } {
+    return {
+      size: this.cache.size(),
+    };
+  }
+
+  /**
+   * Check if language is supported
+   * @param language - Language to check
+   * @returns True if language has registered patterns
+   */
+  isLanguageSupported(language: SupportedLanguage): boolean {
+    const patterns = this.patterns.get(language);
+    return patterns !== undefined && patterns.length > 0;
+  }
+
+  /**
+   * Get list of supported languages
+   * @returns Array of supported language identifiers
+   */
+  getSupportedLanguages(): SupportedLanguage[] {
+    return Array.from(this.patterns.keys());
   }
 }

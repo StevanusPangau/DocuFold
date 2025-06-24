@@ -6,8 +6,9 @@ import { DocstringDetector } from '@/detectors/docstringDetector';
  * TODO: Implement in Task 3.0 - Folding Range Provider Implementation
  */
 export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
-  constructor(private _detector: DocstringDetector) {
-    // Detector will be used in future implementation
+  constructor(private detector: DocstringDetector) {
+    // Detector will be used in Task 3.0 implementation
+    void this.detector; // Suppress unused variable warning
   }
 
   /**

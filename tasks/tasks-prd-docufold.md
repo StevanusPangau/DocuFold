@@ -51,17 +51,17 @@ Based on PRD: `prd-docufold.md`
   - [x] 1.6 Create basic folder structure (src/, test/, out/) and initial files
   - [x] 1.7 Setup development and debugging configuration in .vscode/launch.json
 
-- [ ] 2.0 Core Docstring Detection Engine
+- [x] 2.0 Core Docstring Detection Engine
 
   - [x] 2.1 Create TypeScript interfaces for docstring detection patterns and results
   - [x] 2.2 Implement Python docstring detection (triple quotes """ and ''', single line)
   - [x] 2.3 Implement JavaScript/TypeScript JSDoc detection (/\*\* \*/ patterns)
   - [x] 2.4 Implement Java/C# XML documentation detection (/// and /\*\* \*/)
-  - [ ] 2.5 Create extensible language pattern registry for future language support
-  - [ ] 2.6 Implement docstring boundary detection (start/end positions)
-  - [ ] 2.7 Add preview text extraction (first line or summary) functionality
-  - [ ] 2.8 Implement performance optimizations (caching, debouncing)
-  - [ ] 2.9 Create comprehensive unit tests for all language detectors
+  - [x] 2.5 Create extensible language pattern registry for future language support
+  - [x] 2.6 Implement docstring boundary detection (start/end positions)
+  - [x] 2.7 Add preview text extraction (first line or summary) functionality
+  - [x] 2.8 Implement performance optimizations (caching, debouncing)
+  - [x] 2.9 Create comprehensive unit tests for all language detectors
 
 - [ ] 3.0 Folding Range Provider Implementation
 
