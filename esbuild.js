@@ -6,23 +6,6 @@ const watch = process.argv.includes('--watch');
 /**
  * @type {import('esbuild').BuildOptions}
  */
-const esbuildConfig = {
-  entryPoints: ['src/extension.ts'],
-  bundle: true,
-  format: 'cjs',
-  minify: production,
-  sourcemap: !production,
-  sourcesContent: false,
-  platform: 'node',
-  outfile: 'out/extension.js',
-  external: ['vscode'],
-  logLevel: 'silent',
-  plugins: [
-    /* add to the end of plugins array */
-    esbuildProblemMatcherPlugin,
-  ],
-};
-
 /**
  * @type {import('esbuild').Plugin}
  */
@@ -41,6 +24,20 @@ const esbuildProblemMatcherPlugin = {
       console.log('[watch] build finished');
     });
   },
+};
+
+const esbuildConfig = {
+  entryPoints: ['src/extension.ts'],
+  bundle: true,
+  format: 'cjs',
+  minify: production,
+  sourcemap: !production,
+  sourcesContent: false,
+  platform: 'node',
+  outfile: 'out/extension.js',
+  external: ['vscode'],
+  logLevel: 'silent',
+  plugins: [esbuildProblemMatcherPlugin],
 };
 
 async function main() {

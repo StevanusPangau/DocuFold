@@ -17,14 +17,14 @@ Based on PRD: `prd-docufold.md`
 - `esbuild.js` - Build pipeline configuration using esbuild for bundling
 - `.vscode/tasks.json` - VSCode build tasks integration
 - `.vscode/launch.json` - VSCode debugging and launch configuration
-- `src/providers/foldingRangeProvider.ts` - Core folding range provider implementation
-- `src/detectors/docstringDetector.ts` - Language-specific docstring detection engine
-- `src/services/configurationService.ts` - Settings and configuration management
-- `src/services/statusBarService.ts` - Status bar integration and indicators
-- `src/commands/foldingCommands.ts` - Command palette and manual folding commands
+- `src/types/index.ts` - TypeScript type definitions and interfaces
 - `src/utils/languageUtils.ts` - Language detection and pattern utilities
-- `src/utils/performanceUtils.ts` - Performance optimization utilities
-- `src/types/index.ts` - TypeScript type definitions
+- `src/utils/performanceUtils.ts` - Performance optimization utilities (cache, debounce, etc.)
+- `src/detectors/docstringDetector.ts` - Language-specific docstring detection engine (placeholder)
+- `src/providers/foldingRangeProvider.ts` - Core folding range provider implementation (placeholder)
+- `src/services/configurationService.ts` - Settings and configuration management (placeholder)
+- `src/services/statusBarService.ts` - Status bar integration and indicators (placeholder)
+- `src/commands/foldingCommands.ts` - Command palette and manual folding commands (placeholder)
 - `test/extension.test.ts` - Main extension functionality tests
 - `test/providers/foldingRangeProvider.test.ts` - Unit tests for folding provider
 - `test/detectors/docstringDetector.test.ts` - Unit tests for docstring detection
@@ -41,15 +41,15 @@ Based on PRD: `prd-docufold.md`
 
 ## Tasks
 
-- [ ] 1.0 Project Setup & Extension Scaffolding
+- [x] 1.0 Project Setup & Extension Scaffolding
 
   - [x] 1.1 Initialize VSCode extension project using `yo code` generator or manual setup
   - [x] 1.2 Configure TypeScript with proper tsconfig.json for extension development
   - [x] 1.3 Setup testing framework with Mocha and VSCode extension test runner
   - [x] 1.4 Configure package.json with extension metadata, activation events, and commands
   - [x] 1.5 Setup build pipeline with webpack or esbuild for extension bundling
-  - [ ] 1.6 Create basic folder structure (src/, test/, out/) and initial files
-  - [ ] 1.7 Setup development and debugging configuration in .vscode/launch.json
+  - [x] 1.6 Create basic folder structure (src/, test/, out/) and initial files
+  - [x] 1.7 Setup development and debugging configuration in .vscode/launch.json
 
 - [ ] 2.0 Core Docstring Detection Engine
 
