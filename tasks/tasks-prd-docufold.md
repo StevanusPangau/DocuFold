@@ -53,8 +53,8 @@ Based on PRD: `prd-docufold.md`
 
 - [ ] 2.0 Core Docstring Detection Engine
 
-  - [ ] 2.1 Create TypeScript interfaces for docstring detection patterns and results
-  - [ ] 2.2 Implement Python docstring detection (triple quotes """ and ''', single line)
+  - [x] 2.1 Create TypeScript interfaces for docstring detection patterns and results
+  - [x] 2.2 Implement Python docstring detection (triple quotes """ and ''', single line)
   - [ ] 2.3 Implement JavaScript/TypeScript JSDoc detection (/\*\* \*/ patterns)
   - [ ] 2.4 Implement Java/C# XML documentation detection (/// and /\*\* \*/)
   - [ ] 2.5 Create extensible language pattern registry for future language support

@@ -41,15 +41,20 @@ const esbuildConfig = {
 };
 
 async function main() {
-  const ctx = await build({
-    ...esbuildConfig,
-    ...(watch && { watch }),
-  });
-
   if (watch) {
+    const ctx = await build({
+      ...esbuildConfig,
+      watch: {
+        onRebuild(error, result) {
+          if (error) console.error('watch build failed:', error);
+          else console.log('watch build succeeded');
+        },
+      },
+    });
     console.log('[watch] build started');
   } else {
-    await ctx.dispose();
+    await build(esbuildConfig);
+    console.log('[build] build finished');
   }
 }
 
