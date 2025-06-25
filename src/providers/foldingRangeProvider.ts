@@ -75,7 +75,11 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param token - Cancellation token
    * @returns Array of folding ranges
    */
-  async provideFoldingRanges(document: vscode.TextDocument, _context: vscode.FoldingContext, token: vscode.CancellationToken): Promise<vscode.FoldingRange[]> {
+  async provideFoldingRanges(
+    document: vscode.TextDocument,
+    _context: vscode.FoldingContext,
+    token: vscode.CancellationToken
+  ): Promise<vscode.FoldingRange[]> {
     try {
       // Task 3.7: Error handling and fallback mechanisms
       if (token.isCancellationRequested) {
@@ -118,7 +122,9 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
 
       // Task 3.5: Performance optimization for large files
       if (document.lineCount > 1000) {
-        console.log(`DocuFold: Generated ${foldingRanges.length} folding ranges in ${elapsed.toFixed(2)}ms for ${document.fileName}`);
+        console.log(
+          `DocuFold: Generated ${foldingRanges.length} folding ranges in ${elapsed.toFixed(2)}ms for ${document.fileName}`
+        );
       }
 
       return foldingRanges;
@@ -137,7 +143,11 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param token - Cancellation token
    * @returns Array of folding ranges
    */
-  private async calculateFoldingRanges(document: vscode.TextDocument, docstrings: DocstringInfo[], token: vscode.CancellationToken): Promise<vscode.FoldingRange[]> {
+  private async calculateFoldingRanges(
+    document: vscode.TextDocument,
+    docstrings: DocstringInfo[],
+    token: vscode.CancellationToken
+  ): Promise<vscode.FoldingRange[]> {
     const foldingRanges: vscode.FoldingRange[] = [];
 
     for (const docstring of docstrings) {
@@ -156,7 +166,11 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       }
 
       // Create folding range
-      const foldingRange = new vscode.FoldingRange(docstring.startPosition.line, docstring.endPosition.line, vscode.FoldingRangeKind.Comment);
+      const foldingRange = new vscode.FoldingRange(
+        docstring.startPosition.line,
+        docstring.endPosition.line,
+        vscode.FoldingRangeKind.Comment
+      );
 
       foldingRanges.push(foldingRange);
     }
@@ -176,7 +190,10 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       return false;
     }
 
-    if (docstring.startPosition.line >= document.lineCount || docstring.endPosition.line >= document.lineCount) {
+    if (
+      docstring.startPosition.line >= document.lineCount ||
+      docstring.endPosition.line >= document.lineCount
+    ) {
       return false;
     }
 
@@ -211,7 +228,11 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       }
 
       // Get folding ranges
-      const foldingRanges = await this.provideFoldingRanges(document, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await this.provideFoldingRanges(
+        document,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       if (foldingRanges.length === 0) {
         return;
@@ -221,7 +242,7 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       await vscode.commands.executeCommand('editor.fold', {
         levels: 1,
         direction: 'down',
-        selectionLines: foldingRanges.map((range) => range.start),
+        selectionLines: foldingRanges.map(range => range.start),
       });
     } catch (error) {
       console.error('DocuFold: Error in applyAutoFolding:', error);
@@ -233,7 +254,10 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param document - VSCode text document
    * @param editor - Text editor (optional)
    */
-  async foldAllDocstrings(document: vscode.TextDocument, editor?: vscode.TextEditor): Promise<void> {
+  async foldAllDocstrings(
+    document: vscode.TextDocument,
+    editor?: vscode.TextEditor
+  ): Promise<void> {
     try {
       const activeEditor = editor || vscode.window.activeTextEditor;
       if (!activeEditor || activeEditor.document !== document) {
@@ -247,7 +271,9 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       }
 
       // Create selections for all folding ranges
-      const selections = foldingRanges.map((range) => new vscode.Selection(range.start, 0, range.start, 0));
+      const selections = foldingRanges.map(
+        range => new vscode.Selection(range.start, 0, range.start, 0)
+      );
 
       activeEditor.selections = selections;
       await vscode.commands.executeCommand('editor.fold');
@@ -261,7 +287,10 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param document - VSCode text document
    * @param editor - Text editor (optional)
    */
-  async unfoldAllDocstrings(document: vscode.TextDocument, editor?: vscode.TextEditor): Promise<void> {
+  async unfoldAllDocstrings(
+    document: vscode.TextDocument,
+    editor?: vscode.TextEditor
+  ): Promise<void> {
     try {
       const activeEditor = editor || vscode.window.activeTextEditor;
       if (!activeEditor || activeEditor.document !== document) {
@@ -275,7 +304,9 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       }
 
       // Create selections for all folding ranges
-      const selections = foldingRanges.map((range) => new vscode.Selection(range.start, 0, range.start, 0));
+      const selections = foldingRanges.map(
+        range => new vscode.Selection(range.start, 0, range.start, 0)
+      );
 
       activeEditor.selections = selections;
       await vscode.commands.executeCommand('editor.unfold');
@@ -291,7 +322,12 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param fold - True to fold, false to unfold
    * @param editor - Text editor (optional)
    */
-  async toggleDocstringAtPosition(document: vscode.TextDocument, position: vscode.Position, fold: boolean, editor?: vscode.TextEditor): Promise<void> {
+  async toggleDocstringAtPosition(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    fold: boolean,
+    editor?: vscode.TextEditor
+  ): Promise<void> {
     try {
       const activeEditor = editor || vscode.window.activeTextEditor;
       if (!activeEditor || activeEditor.document !== document) {
@@ -301,7 +337,9 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       const foldingRanges = await this.getFoldingRangesForDocument(document);
 
       // Find folding range that contains the position
-      const targetRange = foldingRanges.find((range) => position.line >= range.start && position.line <= range.end);
+      const targetRange = foldingRanges.find(
+        range => position.line >= range.start && position.line <= range.end
+      );
 
       if (!targetRange) {
         return;
@@ -326,8 +364,14 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param document - VSCode text document
    * @returns Array of folding ranges
    */
-  private async getFoldingRangesForDocument(document: vscode.TextDocument): Promise<vscode.FoldingRange[]> {
-    return await this.provideFoldingRanges(document, {}, new vscode.CancellationTokenSource().token);
+  private async getFoldingRangesForDocument(
+    document: vscode.TextDocument
+  ): Promise<vscode.FoldingRange[]> {
+    return await this.provideFoldingRanges(
+      document,
+      {},
+      new vscode.CancellationTokenSource().token
+    );
   }
 
   /**
@@ -345,7 +389,10 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param cached - Cached entry
    * @returns True if cache should be invalidated
    */
-  private shouldInvalidateCache(_document: vscode.TextDocument, cached: FoldingRangeCache): boolean {
+  private shouldInvalidateCache(
+    _document: vscode.TextDocument,
+    cached: FoldingRangeCache
+  ): boolean {
     // Simple heuristic: if cache is older than 30 seconds, invalidate
     const cacheAge = Date.now() - cached.timestamp;
     return cacheAge > 30000;
@@ -399,7 +446,10 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
    * @param chunkSize - Size of each chunk
    * @returns Array of folding ranges
    */
-  async processLargeFile(document: vscode.TextDocument, chunkSize: number = 1000): Promise<vscode.FoldingRange[]> {
+  async processLargeFile(
+    document: vscode.TextDocument,
+    chunkSize: number = 1000
+  ): Promise<vscode.FoldingRange[]> {
     if (document.lineCount <= chunkSize) {
       // Use normal processing for smaller files
       return await this.getFoldingRangesForDocument(document);
@@ -419,17 +469,26 @@ export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
       const docstrings = await this.detector.detectDocstrings(document);
 
       // Filter docstrings that fall within this chunk
-      const chunkDocstrings = docstrings.filter((docstring) => docstring.startPosition.line >= startLine && docstring.endPosition.line < endLine);
+      const chunkDocstrings = docstrings.filter(
+        docstring =>
+          docstring.startPosition.line >= startLine && docstring.endPosition.line < endLine
+      );
 
       // Convert to folding ranges
       for (const docstring of chunkDocstrings) {
         if (this.isValidFoldingRange(document, docstring)) {
-          allRanges.push(new vscode.FoldingRange(docstring.startPosition.line, docstring.endPosition.line, vscode.FoldingRangeKind.Comment));
+          allRanges.push(
+            new vscode.FoldingRange(
+              docstring.startPosition.line,
+              docstring.endPosition.line,
+              vscode.FoldingRangeKind.Comment
+            )
+          );
         }
       }
 
       // Add small delay between chunks to prevent blocking
-      await new Promise((resolve) => setTimeout(resolve, 1));
+      await new Promise(resolve => setTimeout(resolve, 1));
     }
 
     return allRanges;

@@ -19,7 +19,11 @@ export class DocuFoldHoverProvider implements vscode.HoverProvider {
   /**
    * Provide hover information for the given position
    */
-  async provideHover(document: vscode.TextDocument, position: vscode.Position, token: vscode.CancellationToken): Promise<vscode.Hover | undefined> {
+  async provideHover(
+    document: vscode.TextDocument,
+    position: vscode.Position,
+    token: vscode.CancellationToken
+  ): Promise<vscode.Hover | undefined> {
     try {
       // Check if hover preview is enabled
       const config = this.configurationService.getConfiguration();
@@ -46,7 +50,11 @@ export class DocuFoldHoverProvider implements vscode.HoverProvider {
       }
 
       // Find docstring at the hover position
-      const docstringAtPosition = docstrings.find((docstring) => position.line >= docstring.startPosition.line && position.line <= docstring.endPosition.line);
+      const docstringAtPosition = docstrings.find(
+        docstring =>
+          position.line >= docstring.startPosition.line &&
+          position.line <= docstring.endPosition.line
+      );
 
       if (!docstringAtPosition) {
         return undefined;
@@ -116,7 +124,9 @@ export class DocuFoldHoverProvider implements vscode.HoverProvider {
     switch (languageId) {
       case 'python':
         // Remove triple quotes for cleaner display
-        formattedContent = formattedContent.replace(/^['"]?['"]?['"]?/, '').replace(/['"]?['"]?['"]?$/, '');
+        formattedContent = formattedContent
+          .replace(/^['"]?['"]?['"]?/, '')
+          .replace(/['"]?['"]?['"]?$/, '');
         break;
       case 'javascript':
       case 'typescript':
@@ -128,7 +138,9 @@ export class DocuFoldHoverProvider implements vscode.HoverProvider {
         break;
       case 'csharp':
         // Clean XML doc comments
-        formattedContent = formattedContent.replace(/^\s*\/\/\/\s?/gm, '').replace(/<\/?[^>]+>/g, ''); // Remove XML tags
+        formattedContent = formattedContent
+          .replace(/^\s*\/\/\/\s?/gm, '')
+          .replace(/<\/?[^>]+>/g, ''); // Remove XML tags
         break;
     }
 

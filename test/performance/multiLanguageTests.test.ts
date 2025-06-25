@@ -28,8 +28,13 @@ suite('Multi-Language Support Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect Python docstrings');
 
       // Verify Python-specific patterns
-      const hasTripleQuotes = docstrings.some((d) => d.preview.includes('"""') || d.preview.includes("'''"));
-      assert.ok(hasTripleQuotes || docstrings.length > 0, 'Should detect Python triple-quote patterns');
+      const hasTripleQuotes = docstrings.some(
+        d => d.preview.includes('"""') || d.preview.includes("'''")
+      );
+      assert.ok(
+        hasTripleQuotes || docstrings.length > 0,
+        'Should detect Python triple-quote patterns'
+      );
 
       console.log(`Python: ${docstrings.length} docstrings detected`);
     });
@@ -38,11 +43,15 @@ suite('Multi-Language Support Tests', () => {
       const filePath = path.join(__dirname, '../../test-workspace/test-python.py');
       const document = await vscode.workspace.openTextDocument(filePath);
 
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for Python');
       assert.ok(
-        ranges.every((r) => r.kind === vscode.FoldingRangeKind.Comment),
+        ranges.every(r => r.kind === vscode.FoldingRangeKind.Comment),
         'All ranges should be comment type'
       );
 
@@ -60,7 +69,7 @@ suite('Multi-Language Support Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect TypeScript JSDoc comments');
 
       // Verify JSDoc patterns
-      const hasJSDoc = docstrings.some((d) => d.content.includes('/**') || d.content.includes('*/'));
+      const hasJSDoc = docstrings.some(d => d.content.includes('/**') || d.content.includes('*/'));
       assert.ok(hasJSDoc, 'Should detect JSDoc patterns');
 
       console.log(`TypeScript: ${docstrings.length} JSDoc comments detected`);
@@ -81,7 +90,11 @@ suite('Multi-Language Support Tests', () => {
       const filePath = path.join(__dirname, '../../test-workspace/test-typescript.ts');
       const document = await vscode.workspace.openTextDocument(filePath);
 
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for TypeScript');
 
@@ -99,7 +112,10 @@ suite('Multi-Language Support Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect Java Javadoc comments');
 
       // Verify Javadoc patterns
-      const hasJavadoc = docstrings.some((d) => d.content.includes('/**') || d.content.includes('@param') || d.content.includes('@return'));
+      const hasJavadoc = docstrings.some(
+        d =>
+          d.content.includes('/**') || d.content.includes('@param') || d.content.includes('@return')
+      );
       assert.ok(hasJavadoc, 'Should detect Javadoc patterns');
 
       console.log(`Java: ${docstrings.length} Javadoc comments detected`);
@@ -109,7 +125,11 @@ suite('Multi-Language Support Tests', () => {
       const filePath = path.join(__dirname, '../../test-workspace/test-java.java');
       const document = await vscode.workspace.openTextDocument(filePath);
 
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for Java');
 
@@ -127,7 +147,9 @@ suite('Multi-Language Support Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect C# XML documentation');
 
       // Verify C# XML doc patterns
-      const hasXmlDoc = docstrings.some((d) => d.content.includes('///') || d.content.includes('<summary>'));
+      const hasXmlDoc = docstrings.some(
+        d => d.content.includes('///') || d.content.includes('<summary>')
+      );
       assert.ok(hasXmlDoc, 'Should detect C# XML documentation patterns');
 
       console.log(`C#: ${docstrings.length} XML documentation comments detected`);
@@ -137,7 +159,11 @@ suite('Multi-Language Support Tests', () => {
       const filePath = path.join(__dirname, '../../test-workspace/test-csharp.cs');
       const document = await vscode.workspace.openTextDocument(filePath);
 
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for C#');
 
@@ -172,7 +198,11 @@ suite('Multi-Language Support Tests', () => {
       const docstrings = await detector.detectDocstrings(mockDocument);
 
       // Should return empty array for unsupported languages
-      assert.strictEqual(docstrings.length, 0, 'Should return empty array for unsupported language');
+      assert.strictEqual(
+        docstrings.length,
+        0,
+        'Should return empty array for unsupported language'
+      );
 
       console.log('Unsupported language handled gracefully');
     });
@@ -197,7 +227,11 @@ suite('Multi-Language Support Tests', () => {
         assert.ok(Array.isArray(docstrings), `${testFile.lang}: Should return array of docstrings`);
 
         // Test folding range provision
-        const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+        const ranges = await provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        );
         assert.ok(Array.isArray(ranges), `${testFile.lang}: Should return array of folding ranges`);
 
         // Verify docstring structure
@@ -205,8 +239,14 @@ suite('Multi-Language Support Tests', () => {
           const firstDocstring = docstrings[0];
           assert.ok(firstDocstring?.startPosition, `${testFile.lang}: Should have start position`);
           assert.ok(firstDocstring?.endPosition, `${testFile.lang}: Should have end position`);
-          assert.ok(typeof firstDocstring?.content === 'string', `${testFile.lang}: Should have content string`);
-          assert.ok(typeof firstDocstring?.preview === 'string', `${testFile.lang}: Should have preview string`);
+          assert.ok(
+            typeof firstDocstring?.content === 'string',
+            `${testFile.lang}: Should have content string`
+          );
+          assert.ok(
+            typeof firstDocstring?.preview === 'string',
+            `${testFile.lang}: Should have preview string`
+          );
         }
 
         console.log(`${testFile.lang}: ${docstrings.length} docstrings, ${ranges?.length} ranges`);
@@ -239,13 +279,16 @@ suite('Multi-Language Support Tests', () => {
 
       // Log performance comparison
       console.log('\n=== Cross-Language Performance ===');
-      results.forEach((result) => {
+      results.forEach(result => {
         console.log(`${result.lang}: ${result.time}ms, ${result.docstrings} docstrings`);
       });
 
       // All languages should process within reasonable time
-      results.forEach((result) => {
-        assert.ok(result.time < 100, `${result.lang} should process within 100ms, took ${result.time}ms`);
+      results.forEach(result => {
+        assert.ok(
+          result.time < 100,
+          `${result.lang} should process within 100ms, took ${result.time}ms`
+        );
       });
     });
   });
@@ -269,13 +312,28 @@ suite('Multi-Language Support Tests', () => {
 
           if (firstDocstring && firstDocstring.preview) {
             // Preview should be non-empty and reasonable length
-            assert.ok(firstDocstring.preview.length > 0, `${testFile.lang}: Should have non-empty preview`);
-            assert.ok(firstDocstring.preview.length <= 100, `${testFile.lang}: Preview should be reasonable length`);
+            assert.ok(
+              firstDocstring.preview.length > 0,
+              `${testFile.lang}: Should have non-empty preview`
+            );
+            assert.ok(
+              firstDocstring.preview.length <= 100,
+              `${testFile.lang}: Preview should be reasonable length`
+            );
 
             // Preview should not contain raw markup
-            assert.ok(!firstDocstring.preview.includes('/**'), `${testFile.lang}: Preview should not contain raw JSDoc markers`);
-            assert.ok(!firstDocstring.preview.includes('"""'), `${testFile.lang}: Preview should not contain raw triple quotes`);
-            assert.ok(!firstDocstring.preview.includes('///'), `${testFile.lang}: Preview should not contain raw C# markers`);
+            assert.ok(
+              !firstDocstring.preview.includes('/**'),
+              `${testFile.lang}: Preview should not contain raw JSDoc markers`
+            );
+            assert.ok(
+              !firstDocstring.preview.includes('"""'),
+              `${testFile.lang}: Preview should not contain raw triple quotes`
+            );
+            assert.ok(
+              !firstDocstring.preview.includes('///'),
+              `${testFile.lang}: Preview should not contain raw C# markers`
+            );
 
             console.log(`${testFile.lang} preview: "${firstDocstring.preview}"`);
           }

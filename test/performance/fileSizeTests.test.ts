@@ -30,10 +30,15 @@ suite('File Size Performance Tests', () => {
       const processingTime = endTime - startTime;
 
       // Should process small files very quickly (< 50ms)
-      assert.ok(processingTime < 50, `Small file processing took ${processingTime}ms, expected < 50ms`);
+      assert.ok(
+        processingTime < 50,
+        `Small file processing took ${processingTime}ms, expected < 50ms`
+      );
       assert.ok(docstrings.length > 0, 'Should detect docstrings in small file');
 
-      console.log(`Small file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`);
+      console.log(
+        `Small file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`
+      );
     });
 
     test('should provide folding ranges for small file quickly', async () => {
@@ -41,12 +46,19 @@ suite('File Size Performance Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       const startTime = Date.now();
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const endTime = Date.now();
 
       const processingTime = endTime - startTime;
 
-      assert.ok(processingTime < 50, `Small file folding took ${processingTime}ms, expected < 50ms`);
+      assert.ok(
+        processingTime < 50,
+        `Small file folding took ${processingTime}ms, expected < 50ms`
+      );
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for small file');
 
       console.log(`Small file folding ranges: ${processingTime}ms, ${ranges?.length} ranges`);
@@ -65,10 +77,15 @@ suite('File Size Performance Tests', () => {
       const processingTime = endTime - startTime;
 
       // Should process medium files reasonably quickly (< 200ms)
-      assert.ok(processingTime < 200, `Medium file processing took ${processingTime}ms, expected < 200ms`);
+      assert.ok(
+        processingTime < 200,
+        `Medium file processing took ${processingTime}ms, expected < 200ms`
+      );
       assert.ok(docstrings.length > 0, 'Should detect docstrings in medium file');
 
-      console.log(`Medium file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`);
+      console.log(
+        `Medium file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`
+      );
     });
 
     test('should provide folding ranges for medium file efficiently', async () => {
@@ -76,12 +93,19 @@ suite('File Size Performance Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       const startTime = Date.now();
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const endTime = Date.now();
 
       const processingTime = endTime - startTime;
 
-      assert.ok(processingTime < 200, `Medium file folding took ${processingTime}ms, expected < 200ms`);
+      assert.ok(
+        processingTime < 200,
+        `Medium file folding took ${processingTime}ms, expected < 200ms`
+      );
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for medium file');
 
       console.log(`Medium file folding ranges: ${processingTime}ms, ${ranges?.length} ranges`);
@@ -104,7 +128,10 @@ suite('File Size Performance Tests', () => {
       const secondTime = endTime2 - startTime2;
 
       // Cached operation should be significantly faster
-      assert.ok(secondTime < firstTime / 2, `Cached operation (${secondTime}ms) should be faster than first (${firstTime}ms)`);
+      assert.ok(
+        secondTime < firstTime / 2,
+        `Cached operation (${secondTime}ms) should be faster than first (${firstTime}ms)`
+      );
       assert.deepStrictEqual(docstrings1, docstrings2, 'Cached results should be identical');
 
       console.log(`Medium file caching: First ${firstTime}ms, Cached ${secondTime}ms`);
@@ -123,11 +150,19 @@ suite('File Size Performance Tests', () => {
       const processingTime = endTime - startTime;
 
       // Should process large files within reasonable time (< 1000ms)
-      assert.ok(processingTime < 1000, `Large file processing took ${processingTime}ms, expected < 1000ms`);
+      assert.ok(
+        processingTime < 1000,
+        `Large file processing took ${processingTime}ms, expected < 1000ms`
+      );
       assert.ok(docstrings.length > 0, 'Should detect docstrings in large file');
-      assert.ok(document.lineCount > 5000, `File should have > 5000 lines, has ${document.lineCount}`);
+      assert.ok(
+        document.lineCount > 5000,
+        `File should have > 5000 lines, has ${document.lineCount}`
+      );
 
-      console.log(`Large file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`);
+      console.log(
+        `Large file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings`
+      );
     });
 
     test('should provide folding ranges for large file efficiently', async () => {
@@ -135,13 +170,20 @@ suite('File Size Performance Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       const startTime = Date.now();
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const endTime = Date.now();
 
       const processingTime = endTime - startTime;
 
       // Should provide folding ranges within acceptable time (< 1000ms)
-      assert.ok(processingTime < 1000, `Large file folding took ${processingTime}ms, expected < 1000ms`);
+      assert.ok(
+        processingTime < 1000,
+        `Large file folding took ${processingTime}ms, expected < 1000ms`
+      );
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for large file');
 
       console.log(`Large file folding ranges: ${processingTime}ms, ${ranges?.length} ranges`);
@@ -153,7 +195,11 @@ suite('File Size Performance Tests', () => {
 
       // Test with performance monitoring enabled
       const startTime = Date.now();
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const endTime = Date.now();
 
       const processingTime = endTime - startTime;
@@ -172,7 +218,11 @@ suite('File Size Performance Tests', () => {
       const cancellationTokenSource = new vscode.CancellationTokenSource();
 
       // Start processing and cancel after 100ms
-      const promise = provider.provideFoldingRanges(document, {} as vscode.FoldingContext, cancellationTokenSource.token);
+      const promise = provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        cancellationTokenSource.token
+      );
 
       setTimeout(() => {
         cancellationTokenSource.cancel();
@@ -215,22 +265,29 @@ suite('File Size Performance Tests', () => {
 
       // Log performance comparison
       console.log('\n=== Performance Scaling Comparison ===');
-      results.forEach((result) => {
+      results.forEach(result => {
         const timePerLine = (result.time / result.lines).toFixed(3);
-        console.log(`${result.name}: ${result.lines} lines, ${result.time}ms, ${result.docstrings} docstrings (${timePerLine}ms/line)`);
+        console.log(
+          `${result.name}: ${result.lines} lines, ${result.time}ms, ${result.docstrings} docstrings (${timePerLine}ms/line)`
+        );
       });
 
       // Verify reasonable scaling
-      const smallResult = results.find((r) => r.name === 'small')!;
-      const largeResult = results.find((r) => r.name === 'large')!;
+      const smallResult = results.find(r => r.name === 'small')!;
+      const largeResult = results.find(r => r.name === 'large')!;
 
       const lineRatio = largeResult.lines / smallResult.lines;
       const timeRatio = largeResult.time / smallResult.time;
 
       // Time should not scale worse than O(n^2)
-      assert.ok(timeRatio < lineRatio * lineRatio, `Time scaling should be better than O(n^2). Line ratio: ${lineRatio.toFixed(2)}, Time ratio: ${timeRatio.toFixed(2)}`);
+      assert.ok(
+        timeRatio < lineRatio * lineRatio,
+        `Time scaling should be better than O(n^2). Line ratio: ${lineRatio.toFixed(2)}, Time ratio: ${timeRatio.toFixed(2)}`
+      );
 
-      console.log(`Scaling analysis: ${lineRatio.toFixed(2)}x lines, ${timeRatio.toFixed(2)}x time`);
+      console.log(
+        `Scaling analysis: ${lineRatio.toFixed(2)}x lines, ${timeRatio.toFixed(2)}x time`
+      );
     });
   });
 
@@ -242,7 +299,11 @@ suite('File Size Performance Tests', () => {
       // Perform multiple operations to test memory usage
       for (let i = 0; i < 10; i++) {
         await detector.detectDocstrings(document);
-        await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+        await provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        );
       }
 
       // Clear caches and verify they're actually cleared

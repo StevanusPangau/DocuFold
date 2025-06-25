@@ -2,7 +2,12 @@ import * as assert from 'assert';
 import * as vscode from 'vscode';
 import * as sinon from 'sinon';
 import { ConfigurationService } from '../../src/services/configurationService';
-import { DocuFoldConfiguration, LanguageConfiguration, PerformanceSettings, AdvancedSettings } from '../../src/types';
+import {
+  DocuFoldConfiguration,
+  LanguageConfiguration,
+  PerformanceSettings,
+  AdvancedSettings,
+} from '../../src/types';
 
 suite('ConfigurationService Tests', () => {
   let configService: ConfigurationService;
@@ -311,7 +316,7 @@ suite('ConfigurationService Tests', () => {
 
       const result = configService.validateConfiguration(configWithUnsupportedLang);
 
-      assert(result.warnings.some((w) => w.includes('unsupported-language')));
+      assert(result.warnings.some(w => w.includes('unsupported-language')));
     });
   });
 
@@ -321,15 +326,31 @@ suite('ConfigurationService Tests', () => {
 
       await configService.updateConfiguration('autoFoldEnabled', false);
 
-      assert(mockWorkspaceConfig.update.calledWith('autoFoldEnabled', false, vscode.ConfigurationTarget.Global));
+      assert(
+        mockWorkspaceConfig.update.calledWith(
+          'autoFoldEnabled',
+          false,
+          vscode.ConfigurationTarget.Global
+        )
+      );
     });
 
     test('should update configuration with specific target', async () => {
       mockWorkspaceConfig.update.resolves();
 
-      await configService.updateConfiguration('previewLength', 80, vscode.ConfigurationTarget.Workspace);
+      await configService.updateConfiguration(
+        'previewLength',
+        80,
+        vscode.ConfigurationTarget.Workspace
+      );
 
-      assert(mockWorkspaceConfig.update.calledWith('previewLength', 80, vscode.ConfigurationTarget.Workspace));
+      assert(
+        mockWorkspaceConfig.update.calledWith(
+          'previewLength',
+          80,
+          vscode.ConfigurationTarget.Workspace
+        )
+      );
     });
 
     test('should reset configuration to defaults', async () => {
@@ -342,10 +363,10 @@ suite('ConfigurationService Tests', () => {
   });
 
   suite('Configuration Change Listeners', () => {
-    test('should register and call configuration change listeners', (done) => {
+    test('should register and call configuration change listeners', done => {
       let callbackCalled = false;
 
-      const disposable = configService.onConfigurationChanged((config) => {
+      const disposable = configService.onConfigurationChanged(config => {
         callbackCalled = true;
         assert(config);
         disposable.dispose();

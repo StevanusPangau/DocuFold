@@ -48,7 +48,13 @@ suite('DocuFold Integration Tests', () => {
 
     test('All commands should be registered', async () => {
       const commands = await vscode.commands.getCommands(true);
-      const expectedCommands = ['docufold.toggleAutoFold', 'docufold.foldAllDocstrings', 'docufold.unfoldAllDocstrings', 'docufold.foldCurrentDocstring', 'docufold.unfoldCurrentDocstring'];
+      const expectedCommands = [
+        'docufold.toggleAutoFold',
+        'docufold.foldAllDocstrings',
+        'docufold.unfoldAllDocstrings',
+        'docufold.foldCurrentDocstring',
+        'docufold.unfoldCurrentDocstring',
+      ];
 
       for (const cmd of expectedCommands) {
         assert.ok(commands.includes(cmd), `Command ${cmd} should be registered`);
@@ -91,21 +97,28 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect docstrings in Python file');
 
       // Check for module-level docstring
-      const moduleDocstring = docstrings.find((d) => d.startPosition.line === 0);
+      const moduleDocstring = docstrings.find(d => d.startPosition.line === 0);
       assert.ok(moduleDocstring, 'Should detect module-level docstring');
-      assert.ok(moduleDocstring.preview.includes('module-level docstring'), 'Should extract correct preview');
+      assert.ok(
+        moduleDocstring.preview.includes('module-level docstring'),
+        'Should extract correct preview'
+      );
 
       // Check for function docstrings
-      const functionDocstrings = docstrings.filter((d) => d.preview.includes('function'));
+      const functionDocstrings = docstrings.filter(d => d.preview.includes('function'));
       assert.ok(functionDocstrings.length > 0, 'Should detect function docstrings');
 
       // Check for class docstrings
-      const classDocstrings = docstrings.filter((d) => d.preview.includes('class'));
+      const classDocstrings = docstrings.filter(d => d.preview.includes('class'));
       assert.ok(classDocstrings.length > 0, 'Should detect class docstrings');
     });
 
     test('Should provide folding ranges for Python docstrings', async () => {
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(pythonDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        pythonDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(foldingRanges.length > 0, 'Should provide folding ranges');
 
@@ -113,7 +126,11 @@ suite('DocuFold Integration Tests', () => {
       for (const range of foldingRanges) {
         assert.ok(range.start >= 0, 'Folding range start should be valid');
         assert.ok(range.end > range.start, 'Folding range end should be after start');
-        assert.strictEqual(range.kind, vscode.FoldingRangeKind.Comment, 'Should be comment folding range');
+        assert.strictEqual(
+          range.kind,
+          vscode.FoldingRangeKind.Comment,
+          'Should be comment folding range'
+        );
       }
     });
 
@@ -157,20 +174,28 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect JSDoc comments in TypeScript file');
 
       // Check for module-level JSDoc
-      const moduleDocstring = docstrings.find((d) => d.preview.includes('TypeScript module'));
+      const moduleDocstring = docstrings.find(d => d.preview.includes('TypeScript module'));
       assert.ok(moduleDocstring, 'Should detect module-level JSDoc');
 
       // Check for function JSDoc
-      const functionDocstrings = docstrings.filter((d) => d.preview.includes('function') || d.preview.includes('Multi-line'));
+      const functionDocstrings = docstrings.filter(
+        d => d.preview.includes('function') || d.preview.includes('Multi-line')
+      );
       assert.ok(functionDocstrings.length > 0, 'Should detect function JSDoc comments');
 
       // Check for class JSDoc
-      const classDocstrings = docstrings.filter((d) => d.preview.includes('Constructor') || d.preview.includes('class'));
+      const classDocstrings = docstrings.filter(
+        d => d.preview.includes('Constructor') || d.preview.includes('class')
+      );
       assert.ok(classDocstrings.length > 0, 'Should detect class JSDoc comments');
     });
 
     test('Should provide folding ranges for TypeScript JSDoc', async () => {
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(tsDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        tsDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(foldingRanges.length > 0, 'Should provide folding ranges for TypeScript');
 
@@ -204,16 +229,25 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect Javadoc comments in Java file');
 
       // Check for class-level Javadoc
-      const classDocstring = docstrings.find((d) => d.preview.includes('comprehensive Java class'));
+      const classDocstring = docstrings.find(d => d.preview.includes('comprehensive Java class'));
       assert.ok(classDocstring, 'Should detect class-level Javadoc');
 
       // Check for method Javadoc
-      const methodDocstrings = docstrings.filter((d) => d.preview.includes('method') || d.preview.includes('Constructor') || d.preview.includes('Getter'));
+      const methodDocstrings = docstrings.filter(
+        d =>
+          d.preview.includes('method') ||
+          d.preview.includes('Constructor') ||
+          d.preview.includes('Getter')
+      );
       assert.ok(methodDocstrings.length > 0, 'Should detect method Javadoc comments');
     });
 
     test('Should provide folding ranges for Java Javadoc', async () => {
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(javaDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        javaDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(foldingRanges.length > 0, 'Should provide folding ranges for Java');
     });
@@ -242,16 +276,25 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect XML documentation in C# file');
 
       // Check for class-level documentation
-      const classDocstring = docstrings.find((d) => d.preview.includes('C# class'));
+      const classDocstring = docstrings.find(d => d.preview.includes('C# class'));
       assert.ok(classDocstring, 'Should detect class-level XML documentation');
 
       // Check for method documentation
-      const methodDocstrings = docstrings.filter((d) => d.preview.includes('method') || d.preview.includes('constructor') || d.preview.includes('property'));
+      const methodDocstrings = docstrings.filter(
+        d =>
+          d.preview.includes('method') ||
+          d.preview.includes('constructor') ||
+          d.preview.includes('property')
+      );
       assert.ok(methodDocstrings.length > 0, 'Should detect method XML documentation');
     });
 
     test('Should provide folding ranges for C# XML documentation', async () => {
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(csharpDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        csharpDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(foldingRanges.length > 0, 'Should provide folding ranges for C#');
     });
@@ -280,12 +323,21 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(docstrings.length > 0, 'Should detect JSDoc comments in JavaScript file');
 
       // Check for function JSDoc
-      const functionDocstrings = docstrings.filter((d) => d.preview.includes('single line') || d.preview.includes('multi-line') || d.preview.includes('Calculate'));
+      const functionDocstrings = docstrings.filter(
+        d =>
+          d.preview.includes('single line') ||
+          d.preview.includes('multi-line') ||
+          d.preview.includes('Calculate')
+      );
       assert.ok(functionDocstrings.length > 0, 'Should detect function JSDoc comments');
     });
 
     test('Should provide folding ranges for JavaScript JSDoc', async () => {
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(jsDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        jsDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.ok(foldingRanges.length > 0, 'Should provide folding ranges for JavaScript');
     });
@@ -329,8 +381,16 @@ suite('DocuFold Integration Tests', () => {
       assert.ok(config.languageSettings['typescript'], 'TypeScript language settings should exist');
 
       // Check language enablement
-      assert.strictEqual(configurationService.isLanguageEnabled('python'), true, 'Python should be enabled by default');
-      assert.strictEqual(configurationService.isLanguageEnabled('javascript'), true, 'JavaScript should be enabled by default');
+      assert.strictEqual(
+        configurationService.isLanguageEnabled('python'),
+        true,
+        'Python should be enabled by default'
+      );
+      assert.strictEqual(
+        configurationService.isLanguageEnabled('javascript'),
+        true,
+        'JavaScript should be enabled by default'
+      );
     });
   });
 
@@ -364,7 +424,11 @@ suite('DocuFold Integration Tests', () => {
       // Toggle back
       await vscode.commands.executeCommand('docufold.toggleAutoFold');
       const finalConfig = configurationService.getConfiguration().autoFoldEnabled;
-      assert.strictEqual(originalConfig, finalConfig, 'Auto-fold setting should return to original');
+      assert.strictEqual(
+        originalConfig,
+        finalConfig,
+        'Auto-fold setting should return to original'
+      );
     });
 
     test('Should execute fold current docstring command', async () => {
@@ -412,8 +476,16 @@ suite('DocuFold Integration Tests', () => {
       const docstrings = await docstringDetector.detectDocstrings(emptyDocument);
       assert.strictEqual(docstrings.length, 0, 'Should return empty array for empty document');
 
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(emptyDocument, {}, new vscode.CancellationTokenSource().token);
-      assert.strictEqual(foldingRanges.length, 0, 'Should return empty folding ranges for empty document');
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        emptyDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
+      assert.strictEqual(
+        foldingRanges.length,
+        0,
+        'Should return empty folding ranges for empty document'
+      );
     });
 
     test('Should handle configuration errors gracefully', async () => {
@@ -445,7 +517,11 @@ suite('DocuFold Integration Tests', () => {
       const docstrings = await docstringDetector.detectDocstrings(tsDocument);
 
       // Provide folding ranges
-      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(tsDocument, {}, new vscode.CancellationTokenSource().token);
+      const foldingRanges = await foldingRangeProvider.provideFoldingRanges(
+        tsDocument,
+        {},
+        new vscode.CancellationTokenSource().token
+      );
 
       const endTime = Date.now();
       const processingTime = endTime - startTime;

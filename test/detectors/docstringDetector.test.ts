@@ -6,7 +6,11 @@ import { DocstringInfo, SupportedLanguage } from '../../src/types';
 /**
  * Helper function to create a mock VSCode document
  */
-function createMockDocument(content: string, languageId: string, fileName: string = 'test.py'): vscode.TextDocument {
+function createMockDocument(
+  content: string,
+  languageId: string,
+  fileName: string = 'test.py'
+): vscode.TextDocument {
   const lines = content.split('\n');
   return {
     uri: vscode.Uri.file(fileName),
@@ -409,13 +413,14 @@ function testFunction($name) {
       const docstrings = await detector.detectDocstrings(document);
 
       // Should not have duplicates
-      const positions = docstrings.map((d) => `${d.startPosition.line}-${d.startPosition.character}`);
+      const positions = docstrings.map(d => `${d.startPosition.line}-${d.startPosition.character}`);
       const uniquePositions = [...new Set(positions)];
       assert.strictEqual(positions.length, uniquePositions.length);
     });
 
     test('should handle very long preview text', async () => {
-      const longText = 'This is a very long docstring that should be truncated because it exceeds the maximum preview length limit';
+      const longText =
+        'This is a very long docstring that should be truncated because it exceeds the maximum preview length limit';
       const content = `def test_function():
     """${longText}"""
     return True`;

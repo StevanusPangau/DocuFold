@@ -12,7 +12,13 @@
  */
 
 import * as vscode from 'vscode';
-import { DocuFoldConfiguration, LanguageConfiguration, PerformanceSettings, AdvancedSettings, ConfigurationValidationResult } from '../types';
+import {
+  DocuFoldConfiguration,
+  LanguageConfiguration,
+  PerformanceSettings,
+  AdvancedSettings,
+  ConfigurationValidationResult,
+} from '../types';
 import { getSupportedLanguageIds } from '../utils/languageUtils';
 
 /**
@@ -69,14 +75,25 @@ export class ConfigurationService {
       return this.configurationCache.get(cacheKey)!;
     }
 
-    const config = vscode.workspace.getConfiguration(ConfigurationService.CONFIGURATION_SECTION, resource);
+    const config = vscode.workspace.getConfiguration(
+      ConfigurationService.CONFIGURATION_SECTION,
+      resource
+    );
 
     // Build configuration with proper defaults and validation
     const docuFoldConfig: DocuFoldConfiguration = {
       autoFoldEnabled: this.getConfigValue(config, 'autoFoldEnabled', true),
       previewLength: this.getConfigValue(config, 'previewLength', 60),
-      includePatterns: this.getConfigValue(config, 'includePatterns', this.getDefaultIncludePatterns()),
-      excludePatterns: this.getConfigValue(config, 'excludePatterns', this.getDefaultExcludePatterns()),
+      includePatterns: this.getConfigValue(
+        config,
+        'includePatterns',
+        this.getDefaultIncludePatterns()
+      ),
+      excludePatterns: this.getConfigValue(
+        config,
+        'excludePatterns',
+        this.getDefaultExcludePatterns()
+      ),
       enableStatusBar: this.getConfigValue(config, 'enableStatusBar', true),
       foldOnOpen: this.getConfigValue(config, 'foldOnOpen', true),
       enableHoverPreview: this.getConfigValue(config, 'enableHoverPreview', true),
@@ -103,7 +120,11 @@ export class ConfigurationService {
   /**
    * Get configuration value with proper type checking and defaults
    */
-  private getConfigValue<T>(config: vscode.WorkspaceConfiguration, key: string, defaultValue: T): T {
+  private getConfigValue<T>(
+    config: vscode.WorkspaceConfiguration,
+    key: string,
+    defaultValue: T
+  ): T {
     const value = config.get<T>(key);
     return value !== undefined ? value : defaultValue;
   }
@@ -111,9 +132,14 @@ export class ConfigurationService {
   /**
    * Get language-specific settings with validation
    */
-  private getLanguageSettings(config: vscode.WorkspaceConfiguration): Record<string, LanguageConfiguration> {
+  private getLanguageSettings(
+    config: vscode.WorkspaceConfiguration
+  ): Record<string, LanguageConfiguration> {
     const defaultLanguageSettings = this.getDefaultLanguageSettings();
-    const userLanguageSettings = config.get<Record<string, LanguageConfiguration>>('languageSettings', {});
+    const userLanguageSettings = config.get<Record<string, LanguageConfiguration>>(
+      'languageSettings',
+      {}
+    );
 
     // Merge user settings with defaults
     const mergedSettings: Record<string, LanguageConfiguration> = { ...defaultLanguageSettings };
@@ -121,7 +147,10 @@ export class ConfigurationService {
     for (const [language, settings] of Object.entries(userLanguageSettings)) {
       if (getSupportedLanguageIds().includes(language)) {
         mergedSettings[language] = {
-          enabled: settings.enabled !== undefined ? settings.enabled : defaultLanguageSettings[language]?.enabled || true,
+          enabled:
+            settings.enabled !== undefined
+              ? settings.enabled
+              : defaultLanguageSettings[language]?.enabled || true,
           foldSingleLine: settings.foldSingleLine !== undefined ? settings.foldSingleLine : false,
           customPatterns: Array.isArray(settings.customPatterns) ? settings.customPatterns : [],
         };
@@ -139,10 +168,28 @@ export class ConfigurationService {
     const userSettings = config.get<Partial<PerformanceSettings>>('performanceSettings', {});
 
     return {
-      maxFileSize: this.validateNumberInRange(userSettings.maxFileSize, defaultSettings.maxFileSize, 10240, 10485760),
-      cacheTimeout: this.validateNumberInRange(userSettings.cacheTimeout, defaultSettings.cacheTimeout, 30000, 3600000),
-      debounceDelay: this.validateNumberInRange(userSettings.debounceDelay, defaultSettings.debounceDelay, 50, 2000),
-      enablePerformanceLogging: userSettings.enablePerformanceLogging !== undefined ? userSettings.enablePerformanceLogging : defaultSettings.enablePerformanceLogging,
+      maxFileSize: this.validateNumberInRange(
+        userSettings.maxFileSize,
+        defaultSettings.maxFileSize,
+        10240,
+        10485760
+      ),
+      cacheTimeout: this.validateNumberInRange(
+        userSettings.cacheTimeout,
+        defaultSettings.cacheTimeout,
+        30000,
+        3600000
+      ),
+      debounceDelay: this.validateNumberInRange(
+        userSettings.debounceDelay,
+        defaultSettings.debounceDelay,
+        50,
+        2000
+      ),
+      enablePerformanceLogging:
+        userSettings.enablePerformanceLogging !== undefined
+          ? userSettings.enablePerformanceLogging
+          : defaultSettings.enablePerformanceLogging,
     };
   }
 
@@ -154,17 +201,36 @@ export class ConfigurationService {
     const userSettings = config.get<Partial<AdvancedSettings>>('advancedSettings', {});
 
     return {
-      respectUserFolding: userSettings.respectUserFolding !== undefined ? userSettings.respectUserFolding : defaultSettings.respectUserFolding,
-      preserveFoldingOnSave: userSettings.preserveFoldingOnSave !== undefined ? userSettings.preserveFoldingOnSave : defaultSettings.preserveFoldingOnSave,
-      autoFoldDelay: this.validateNumberInRange(userSettings.autoFoldDelay, defaultSettings.autoFoldDelay, 0, 5000),
-      enableContextualFolding: userSettings.enableContextualFolding !== undefined ? userSettings.enableContextualFolding : defaultSettings.enableContextualFolding,
+      respectUserFolding:
+        userSettings.respectUserFolding !== undefined
+          ? userSettings.respectUserFolding
+          : defaultSettings.respectUserFolding,
+      preserveFoldingOnSave:
+        userSettings.preserveFoldingOnSave !== undefined
+          ? userSettings.preserveFoldingOnSave
+          : defaultSettings.preserveFoldingOnSave,
+      autoFoldDelay: this.validateNumberInRange(
+        userSettings.autoFoldDelay,
+        defaultSettings.autoFoldDelay,
+        0,
+        5000
+      ),
+      enableContextualFolding:
+        userSettings.enableContextualFolding !== undefined
+          ? userSettings.enableContextualFolding
+          : defaultSettings.enableContextualFolding,
     };
   }
 
   /**
    * Validate number is within specified range
    */
-  private validateNumberInRange(value: number | undefined, defaultValue: number, min: number, max: number): number {
+  private validateNumberInRange(
+    value: number | undefined,
+    defaultValue: number,
+    min: number,
+    max: number
+  ): number {
     if (typeof value !== 'number' || isNaN(value)) {
       return defaultValue;
     }
@@ -185,7 +251,11 @@ export class ConfigurationService {
         errors.push('autoFoldEnabled must be a boolean');
       }
 
-      if (typeof config.previewLength !== 'number' || config.previewLength < 20 || config.previewLength > 200) {
+      if (
+        typeof config.previewLength !== 'number' ||
+        config.previewLength < 20 ||
+        config.previewLength > 200
+      ) {
         errors.push('previewLength must be a number between 20 and 200');
       }
 
@@ -248,23 +318,54 @@ export class ConfigurationService {
     const defaultConfig = this.getDefaultConfiguration();
 
     return {
-      autoFoldEnabled: typeof config.autoFoldEnabled === 'boolean' ? config.autoFoldEnabled : defaultConfig.autoFoldEnabled,
-      previewLength: typeof config.previewLength === 'number' && config.previewLength >= 20 && config.previewLength <= 200 ? config.previewLength : defaultConfig.previewLength,
-      includePatterns: Array.isArray(config.includePatterns) ? config.includePatterns : defaultConfig.includePatterns,
-      excludePatterns: Array.isArray(config.excludePatterns) ? config.excludePatterns : defaultConfig.excludePatterns,
-      enableStatusBar: typeof config.enableStatusBar === 'boolean' ? config.enableStatusBar : defaultConfig.enableStatusBar,
-      foldOnOpen: typeof config.foldOnOpen === 'boolean' ? config.foldOnOpen : defaultConfig.foldOnOpen,
-      enableHoverPreview: typeof config.enableHoverPreview === 'boolean' ? config.enableHoverPreview : defaultConfig.enableHoverPreview,
-      languageSettings: this.sanitizeLanguageSettings(config.languageSettings, defaultConfig.languageSettings),
-      performanceSettings: this.sanitizePerformanceSettings(config.performanceSettings, defaultConfig.performanceSettings),
-      advancedSettings: this.sanitizeAdvancedSettings(config.advancedSettings, defaultConfig.advancedSettings),
+      autoFoldEnabled:
+        typeof config.autoFoldEnabled === 'boolean'
+          ? config.autoFoldEnabled
+          : defaultConfig.autoFoldEnabled,
+      previewLength:
+        typeof config.previewLength === 'number' &&
+        config.previewLength >= 20 &&
+        config.previewLength <= 200
+          ? config.previewLength
+          : defaultConfig.previewLength,
+      includePatterns: Array.isArray(config.includePatterns)
+        ? config.includePatterns
+        : defaultConfig.includePatterns,
+      excludePatterns: Array.isArray(config.excludePatterns)
+        ? config.excludePatterns
+        : defaultConfig.excludePatterns,
+      enableStatusBar:
+        typeof config.enableStatusBar === 'boolean'
+          ? config.enableStatusBar
+          : defaultConfig.enableStatusBar,
+      foldOnOpen:
+        typeof config.foldOnOpen === 'boolean' ? config.foldOnOpen : defaultConfig.foldOnOpen,
+      enableHoverPreview:
+        typeof config.enableHoverPreview === 'boolean'
+          ? config.enableHoverPreview
+          : defaultConfig.enableHoverPreview,
+      languageSettings: this.sanitizeLanguageSettings(
+        config.languageSettings,
+        defaultConfig.languageSettings
+      ),
+      performanceSettings: this.sanitizePerformanceSettings(
+        config.performanceSettings,
+        defaultConfig.performanceSettings
+      ),
+      advancedSettings: this.sanitizeAdvancedSettings(
+        config.advancedSettings,
+        defaultConfig.advancedSettings
+      ),
     };
   }
 
   /**
    * Sanitize language settings
    */
-  private sanitizeLanguageSettings(settings: any, defaultSettings: Record<string, LanguageConfiguration>): Record<string, LanguageConfiguration> {
+  private sanitizeLanguageSettings(
+    settings: any,
+    defaultSettings: Record<string, LanguageConfiguration>
+  ): Record<string, LanguageConfiguration> {
     if (typeof settings !== 'object') {
       return defaultSettings;
     }
@@ -272,11 +373,19 @@ export class ConfigurationService {
     const sanitized: Record<string, LanguageConfiguration> = { ...defaultSettings };
 
     for (const [language, config] of Object.entries(settings)) {
-      if (getSupportedLanguageIds().includes(language) && typeof config === 'object' && config !== null) {
+      if (
+        getSupportedLanguageIds().includes(language) &&
+        typeof config === 'object' &&
+        config !== null
+      ) {
         const langConfig = config as any;
         sanitized[language] = {
-          enabled: typeof langConfig.enabled === 'boolean' ? langConfig.enabled : defaultSettings[language]?.enabled || true,
-          foldSingleLine: typeof langConfig.foldSingleLine === 'boolean' ? langConfig.foldSingleLine : false,
+          enabled:
+            typeof langConfig.enabled === 'boolean'
+              ? langConfig.enabled
+              : defaultSettings[language]?.enabled || true,
+          foldSingleLine:
+            typeof langConfig.foldSingleLine === 'boolean' ? langConfig.foldSingleLine : false,
           customPatterns: Array.isArray(langConfig.customPatterns) ? langConfig.customPatterns : [],
         };
       }
@@ -288,32 +397,70 @@ export class ConfigurationService {
   /**
    * Sanitize performance settings
    */
-  private sanitizePerformanceSettings(settings: any, defaultSettings: PerformanceSettings): PerformanceSettings {
+  private sanitizePerformanceSettings(
+    settings: any,
+    defaultSettings: PerformanceSettings
+  ): PerformanceSettings {
     if (typeof settings !== 'object') {
       return defaultSettings;
     }
 
     return {
-      maxFileSize: this.validateNumberInRange(settings.maxFileSize, defaultSettings.maxFileSize, 10240, 10485760),
-      cacheTimeout: this.validateNumberInRange(settings.cacheTimeout, defaultSettings.cacheTimeout, 30000, 3600000),
-      debounceDelay: this.validateNumberInRange(settings.debounceDelay, defaultSettings.debounceDelay, 50, 2000),
-      enablePerformanceLogging: typeof settings.enablePerformanceLogging === 'boolean' ? settings.enablePerformanceLogging : defaultSettings.enablePerformanceLogging,
+      maxFileSize: this.validateNumberInRange(
+        settings.maxFileSize,
+        defaultSettings.maxFileSize,
+        10240,
+        10485760
+      ),
+      cacheTimeout: this.validateNumberInRange(
+        settings.cacheTimeout,
+        defaultSettings.cacheTimeout,
+        30000,
+        3600000
+      ),
+      debounceDelay: this.validateNumberInRange(
+        settings.debounceDelay,
+        defaultSettings.debounceDelay,
+        50,
+        2000
+      ),
+      enablePerformanceLogging:
+        typeof settings.enablePerformanceLogging === 'boolean'
+          ? settings.enablePerformanceLogging
+          : defaultSettings.enablePerformanceLogging,
     };
   }
 
   /**
    * Sanitize advanced settings
    */
-  private sanitizeAdvancedSettings(settings: any, defaultSettings: AdvancedSettings): AdvancedSettings {
+  private sanitizeAdvancedSettings(
+    settings: any,
+    defaultSettings: AdvancedSettings
+  ): AdvancedSettings {
     if (typeof settings !== 'object') {
       return defaultSettings;
     }
 
     return {
-      respectUserFolding: typeof settings.respectUserFolding === 'boolean' ? settings.respectUserFolding : defaultSettings.respectUserFolding,
-      preserveFoldingOnSave: typeof settings.preserveFoldingOnSave === 'boolean' ? settings.preserveFoldingOnSave : defaultSettings.preserveFoldingOnSave,
-      autoFoldDelay: this.validateNumberInRange(settings.autoFoldDelay, defaultSettings.autoFoldDelay, 0, 5000),
-      enableContextualFolding: typeof settings.enableContextualFolding === 'boolean' ? settings.enableContextualFolding : defaultSettings.enableContextualFolding,
+      respectUserFolding:
+        typeof settings.respectUserFolding === 'boolean'
+          ? settings.respectUserFolding
+          : defaultSettings.respectUserFolding,
+      preserveFoldingOnSave:
+        typeof settings.preserveFoldingOnSave === 'boolean'
+          ? settings.preserveFoldingOnSave
+          : defaultSettings.preserveFoldingOnSave,
+      autoFoldDelay: this.validateNumberInRange(
+        settings.autoFoldDelay,
+        defaultSettings.autoFoldDelay,
+        0,
+        5000
+      ),
+      enableContextualFolding:
+        typeof settings.enableContextualFolding === 'boolean'
+          ? settings.enableContextualFolding
+          : defaultSettings.enableContextualFolding,
     };
   }
 
@@ -336,14 +483,14 @@ export class ConfigurationService {
    * Setup configuration change watcher
    */
   private setupConfigurationWatcher(): void {
-    const disposable = vscode.workspace.onDidChangeConfiguration((event) => {
+    const disposable = vscode.workspace.onDidChangeConfiguration(event => {
       if (event.affectsConfiguration(ConfigurationService.CONFIGURATION_SECTION)) {
         // Clear cache to force reload
         this.configurationCache.clear();
 
         // Notify listeners
         const newConfig = this.getConfiguration();
-        this.changeListeners.forEach((callback) => {
+        this.changeListeners.forEach(callback => {
           try {
             callback(newConfig);
           } catch (error) {
@@ -359,15 +506,25 @@ export class ConfigurationService {
   /**
    * Update configuration value
    */
-  async updateConfiguration<K extends keyof DocuFoldConfiguration>(key: K, value: DocuFoldConfiguration[K], target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global, resource?: vscode.Uri): Promise<void> {
-    const config = vscode.workspace.getConfiguration(ConfigurationService.CONFIGURATION_SECTION, resource);
+  async updateConfiguration<K extends keyof DocuFoldConfiguration>(
+    key: K,
+    value: DocuFoldConfiguration[K],
+    target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global,
+    resource?: vscode.Uri
+  ): Promise<void> {
+    const config = vscode.workspace.getConfiguration(
+      ConfigurationService.CONFIGURATION_SECTION,
+      resource
+    );
     await config.update(key, value, target);
   }
 
   /**
    * Reset configuration to defaults
    */
-  async resetConfiguration(target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global): Promise<void> {
+  async resetConfiguration(
+    target: vscode.ConfigurationTarget = vscode.ConfigurationTarget.Global
+  ): Promise<void> {
     const config = vscode.workspace.getConfiguration(ConfigurationService.CONFIGURATION_SECTION);
     const defaultConfig = this.getDefaultConfiguration();
 
@@ -379,7 +536,10 @@ export class ConfigurationService {
   /**
    * Get configuration for specific language
    */
-  getLanguageConfiguration(languageId: string, resource?: vscode.Uri): LanguageConfiguration | undefined {
+  getLanguageConfiguration(
+    languageId: string,
+    resource?: vscode.Uri
+  ): LanguageConfiguration | undefined {
     const config = this.getConfiguration(resource);
     return config.languageSettings[languageId];
   }
@@ -395,8 +555,14 @@ export class ConfigurationService {
   /**
    * Get workspace vs user setting precedence info
    */
-  getConfigurationSource(key: keyof DocuFoldConfiguration, resource?: vscode.Uri): 'default' | 'user' | 'workspace' | 'folder' {
-    const config = vscode.workspace.getConfiguration(ConfigurationService.CONFIGURATION_SECTION, resource);
+  getConfigurationSource(
+    key: keyof DocuFoldConfiguration,
+    resource?: vscode.Uri
+  ): 'default' | 'user' | 'workspace' | 'folder' {
+    const config = vscode.workspace.getConfiguration(
+      ConfigurationService.CONFIGURATION_SECTION,
+      resource
+    );
     const inspect = config.inspect(key as string);
 
     if (!inspect) {
@@ -437,7 +603,16 @@ export class ConfigurationService {
    * Get default include patterns
    */
   private getDefaultIncludePatterns(): string[] {
-    return ['**/*.py', '**/*.js', '**/*.ts', '**/*.jsx', '**/*.tsx', '**/*.java', '**/*.cs', '**/*.php'];
+    return [
+      '**/*.py',
+      '**/*.js',
+      '**/*.ts',
+      '**/*.jsx',
+      '**/*.tsx',
+      '**/*.java',
+      '**/*.cs',
+      '**/*.php',
+    ];
   }
 
   /**
@@ -509,7 +684,7 @@ export class ConfigurationService {
    * Dispose of the configuration service
    */
   dispose(): void {
-    this.disposables.forEach((disposable) => disposable.dispose());
+    this.disposables.forEach(disposable => disposable.dispose());
     this.disposables = [];
     this.configurationCache.clear();
     this.changeListeners.clear();

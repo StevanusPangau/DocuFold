@@ -14,10 +14,17 @@ export function run(): Promise<void> {
 
   return new Promise((c, e) => {
     // Only run essential tests to avoid complex dependency issues
-    const testFiles = ['basic.test.js', 'extension.test.js', 'detectors/docstringDetector.test.js', 'providers/foldingRangeProvider.test.js', 'providers/hoverProvider.test.js', 'commands/foldingCommands.test.js'];
+    const testFiles = [
+      'basic.test.js',
+      'extension.test.js',
+      'detectors/docstringDetector.test.js',
+      'providers/foldingRangeProvider.test.js',
+      'providers/hoverProvider.test.js',
+      'commands/foldingCommands.test.js',
+    ];
 
     // Add test files to mocha
-    testFiles.forEach((file) => {
+    testFiles.forEach(file => {
       const fullPath = path.resolve(testsRoot, file);
       try {
         mocha.addFile(fullPath);

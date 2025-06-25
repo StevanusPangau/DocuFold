@@ -7,7 +7,11 @@ import { DocstringInfo } from '../../src/types';
 /**
  * Helper function to create a mock VSCode document
  */
-function createMockDocument(content: string, languageId: string, fileName: string = 'test.py'): vscode.TextDocument {
+function createMockDocument(
+  content: string,
+  languageId: string,
+  fileName: string = 'test.py'
+): vscode.TextDocument {
   const lines = content.split('\n');
   return {
     uri: vscode.Uri.file(fileName),
@@ -285,7 +289,10 @@ function testFunction() {
 
       // Should complete in reasonable time (less than 1 second for 500 functions)
       const executionTime = endTime - startTime;
-      assert.ok(executionTime < 1000, `Execution time ${executionTime}ms should be less than 1000ms`);
+      assert.ok(
+        executionTime < 1000,
+        `Execution time ${executionTime}ms should be less than 1000ms`
+      );
     });
 
     test('should process large files in chunks', async () => {
@@ -300,7 +307,7 @@ function testFunction() {
 
       // Should still detect all docstrings
       assert.strictEqual(ranges.length, 300);
-      assert.ok(ranges.every((range) => range.kind === vscode.FoldingRangeKind.Comment));
+      assert.ok(ranges.every(range => range.kind === vscode.FoldingRangeKind.Comment));
     });
   });
 
@@ -334,7 +341,10 @@ function testFunction() {
       // Second call should be faster (cached)
       const time1 = endTime1 - startTime1;
       const time2 = endTime2 - startTime2;
-      assert.ok(time2 <= time1, `Cached call (${time2}ms) should be faster than first call (${time1}ms)`);
+      assert.ok(
+        time2 <= time1,
+        `Cached call (${time2}ms) should be faster than first call (${time1}ms)`
+      );
     });
 
     test('should provide cache statistics', () => {

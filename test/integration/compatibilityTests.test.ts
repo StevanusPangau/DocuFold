@@ -28,14 +28,21 @@ suite('Extension Compatibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Get our folding ranges
-      const docufoldRanges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const docufoldRanges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Should provide ranges without interfering with VSCode's built-in folding
       assert.ok(docufoldRanges && docufoldRanges.length > 0, 'Should provide folding ranges');
 
       // Verify our ranges use the correct folding kind
       docufoldRanges.forEach((range, index) => {
-        assert.ok(range.kind === vscode.FoldingRangeKind.Comment, `Range ${index} should be Comment type`);
+        assert.ok(
+          range.kind === vscode.FoldingRangeKind.Comment,
+          `Range ${index} should be Comment type`
+        );
         assert.ok(typeof range.start === 'number', `Range ${index} should have numeric start`);
         assert.ok(typeof range.end === 'number', `Range ${index} should have numeric end`);
         assert.ok(range.start < range.end, `Range ${index} should have valid range`);
@@ -56,10 +63,19 @@ suite('Extension Compatibility Tests', () => {
 
       // Verify docstring positions are valid for search operations
       docstrings.forEach((docstring, index) => {
-        assert.ok(docstring.startPosition.line >= 0, `Docstring ${index} should have valid start line`);
+        assert.ok(
+          docstring.startPosition.line >= 0,
+          `Docstring ${index} should have valid start line`
+        );
         assert.ok(docstring.endPosition.line >= 0, `Docstring ${index} should have valid end line`);
-        assert.ok(docstring.startPosition.line <= document.lineCount, `Docstring ${index} start should be within document`);
-        assert.ok(docstring.endPosition.line <= document.lineCount, `Docstring ${index} end should be within document`);
+        assert.ok(
+          docstring.startPosition.line <= document.lineCount,
+          `Docstring ${index} start should be within document`
+        );
+        assert.ok(
+          docstring.endPosition.line <= document.lineCount,
+          `Docstring ${index} end should be within document`
+        );
       });
 
       console.log('Search and replace compatibility: OK');
@@ -74,7 +90,11 @@ suite('Extension Compatibility Tests', () => {
 
       // Verify we're not modifying document content
       const originalContent = document.getText();
-      await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const afterContent = document.getText();
 
       assert.strictEqual(originalContent, afterContent, 'Should not modify document content');
@@ -90,17 +110,27 @@ suite('Extension Compatibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Our folding provider should work alongside language servers
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Should provide folding ranges without blocking language server
-      assert.ok(ranges && ranges.length > 0, 'Should provide ranges without blocking language server');
+      assert.ok(
+        ranges && ranges.length > 0,
+        'Should provide ranges without blocking language server'
+      );
 
       // Performance should be good enough not to interfere
       const startTime = Date.now();
       await detector.detectDocstrings(document);
       const endTime = Date.now();
 
-      assert.ok(endTime - startTime < 100, 'Should be fast enough not to interfere with language server');
+      assert.ok(
+        endTime - startTime < 100,
+        'Should be fast enough not to interfere with language server'
+      );
 
       console.log('Language server compatibility: OK');
     });
@@ -111,9 +141,21 @@ suite('Extension Compatibility Tests', () => {
 
       // Test multiple concurrent folding operations
       const promises = [
-        provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token),
-        provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token),
-        provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token),
+        provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        ),
+        provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        ),
+        provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        ),
       ];
 
       const results = await Promise.all(promises);
@@ -127,7 +169,11 @@ suite('Extension Compatibility Tests', () => {
       const firstResult = results[0];
       if (firstResult) {
         results.forEach((result, index) => {
-          assert.strictEqual(result?.length, firstResult.length, `Concurrent result ${index} should be consistent`);
+          assert.strictEqual(
+            result?.length,
+            firstResult.length,
+            `Concurrent result ${index} should be consistent`
+          );
         });
       }
 
@@ -158,13 +204,20 @@ suite('Extension Compatibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Our folding should work with minimap
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Ranges should be valid for minimap display
       ranges?.forEach((range, index) => {
         assert.ok(range.start >= 0, `Range ${index} start should be non-negative`);
         assert.ok(range.end >= range.start, `Range ${index} should be valid`);
-        assert.ok(range.end < document.lineCount, `Range ${index} should be within document bounds`);
+        assert.ok(
+          range.end < document.lineCount,
+          `Range ${index} should be within document bounds`
+        );
       });
 
       console.log('Minimap and overview ruler compatibility: OK');
@@ -178,7 +231,11 @@ suite('Extension Compatibility Tests', () => {
       const docstringsBefore = await detector.detectDocstrings(document);
 
       // Simulate document changes (like formatting would do)
-      const rangesBefore = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const rangesBefore = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Should handle document changes gracefully
       assert.ok(docstringsBefore.length > 0, 'Should detect docstrings before formatting');
@@ -238,7 +295,13 @@ suite('Extension Compatibility Tests', () => {
       const operations = [];
       for (let i = 0; i < 5; i++) {
         operations.push(detector.detectDocstrings(document));
-        operations.push(provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token));
+        operations.push(
+          provider.provideFoldingRanges(
+            document,
+            {} as vscode.FoldingContext,
+            new vscode.CancellationTokenSource().token
+          )
+        );
       }
 
       const startTime = Date.now();
@@ -250,11 +313,13 @@ suite('Extension Compatibility Tests', () => {
       // Should handle multiple concurrent operations efficiently
       assert.ok(totalTime < 1000, `Multiple operations should complete quickly (${totalTime}ms)`);
       assert.ok(
-        results.every((result) => result !== undefined),
+        results.every(result => result !== undefined),
         'All operations should succeed'
       );
 
-      console.log(`Multiple extensions performance: ${totalTime}ms for ${operations.length} operations`);
+      console.log(
+        `Multiple extensions performance: ${totalTime}ms for ${operations.length} operations`
+      );
     });
 
     test('should handle memory efficiently with other extensions', async () => {
@@ -264,7 +329,11 @@ suite('Extension Compatibility Tests', () => {
       // Simulate repeated operations (like other extensions might do)
       for (let i = 0; i < 10; i++) {
         await detector.detectDocstrings(document);
-        await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+        await provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        );
       }
 
       // Check cache management
@@ -295,10 +364,21 @@ suite('Extension Compatibility Tests', () => {
 
       // Should handle unsupported languages gracefully
       const docstrings = await detector.detectDocstrings(mockDocument);
-      const ranges = await provider.provideFoldingRanges(mockDocument, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        mockDocument,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
-      assert.strictEqual(docstrings.length, 0, 'Should return empty array for unsupported language');
-      assert.ok(ranges && ranges.length === 0, 'Should return empty ranges for unsupported language');
+      assert.strictEqual(
+        docstrings.length,
+        0,
+        'Should return empty array for unsupported language'
+      );
+      assert.ok(
+        ranges && ranges.length === 0,
+        'Should return empty ranges for unsupported language'
+      );
 
       // Should not affect subsequent operations
       const filePath = path.join(__dirname, '../../test-workspace/test-python.py');
@@ -317,7 +397,11 @@ suite('Extension Compatibility Tests', () => {
       // Test cancellation handling
       const cancellationTokenSource = new vscode.CancellationTokenSource();
 
-      const promise = provider.provideFoldingRanges(document, {} as vscode.FoldingContext, cancellationTokenSource.token);
+      const promise = provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        cancellationTokenSource.token
+      );
 
       // Cancel after short delay
       setTimeout(() => {

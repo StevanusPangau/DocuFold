@@ -66,7 +66,10 @@ suite('Accessibility Tests', () => {
 
       if (typeof statusBarItem.tooltip === 'string') {
         assert.ok(statusBarItem.tooltip.length > 10, 'Tooltip should be descriptive');
-        assert.ok(statusBarItem.tooltip.includes('DocuFold'), 'Tooltip should identify the extension');
+        assert.ok(
+          statusBarItem.tooltip.includes('DocuFold'),
+          'Tooltip should identify the extension'
+        );
       }
 
       console.log(`Tooltip: "${statusBarItem.tooltip}"`);
@@ -74,11 +77,17 @@ suite('Accessibility Tests', () => {
 
     test('should provide accessible command descriptions', () => {
       // Test that commands have proper titles for screen readers
-      const commands = ['docufold.toggleAutoFold', 'docufold.foldAllDocstrings', 'docufold.unfoldAllDocstrings', 'docufold.foldCurrentDocstring', 'docufold.unfoldCurrentDocstring'];
+      const commands = [
+        'docufold.toggleAutoFold',
+        'docufold.foldAllDocstrings',
+        'docufold.unfoldAllDocstrings',
+        'docufold.foldCurrentDocstring',
+        'docufold.unfoldCurrentDocstring',
+      ];
 
       // In a real extension, we would check the package.json command contributions
       // For this test, we verify the command structure is accessible
-      commands.forEach((command) => {
+      commands.forEach(command => {
         assert.ok(command.startsWith('docufold.'), 'Commands should have proper namespace');
         assert.ok(command.length > 10, 'Command names should be descriptive');
       });
@@ -98,7 +107,7 @@ suite('Accessibility Tests', () => {
         { command: 'docufold.unfoldCurrentDocstring', key: 'ctrl+shift+d r' },
       ];
 
-      keyboardShortcuts.forEach((shortcut) => {
+      keyboardShortcuts.forEach(shortcut => {
         // Verify keyboard shortcuts follow consistent pattern
         assert.ok(shortcut.key.startsWith('ctrl+shift+d'), 'Should use consistent key prefix');
         assert.ok(shortcut.key.length > 12, 'Should have complete key combination');
@@ -112,7 +121,11 @@ suite('Accessibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Get folding ranges
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Verify folding ranges are compatible with VSCode's folding system
       if (ranges && ranges.length > 0) {
@@ -120,7 +133,10 @@ suite('Accessibility Tests', () => {
           assert.ok(typeof range.start === 'number', `Range ${index} should have numeric start`);
           assert.ok(typeof range.end === 'number', `Range ${index} should have numeric end`);
           assert.ok(range.start < range.end, `Range ${index} should have valid start/end`);
-          assert.ok(range.kind === vscode.FoldingRangeKind.Comment, `Range ${index} should be comment type`);
+          assert.ok(
+            range.kind === vscode.FoldingRangeKind.Comment,
+            `Range ${index} should be comment type`
+          );
         });
       }
 
@@ -129,9 +145,15 @@ suite('Accessibility Tests', () => {
 
     test('should support command palette access', () => {
       // Test that commands are accessible via command palette
-      const commandTitles = ['DocuFold: Toggle Auto-fold', 'DocuFold: Fold All Docstrings', 'DocuFold: Unfold All Docstrings', 'DocuFold: Fold Current Docstring', 'DocuFold: Unfold Current Docstring'];
+      const commandTitles = [
+        'DocuFold: Toggle Auto-fold',
+        'DocuFold: Fold All Docstrings',
+        'DocuFold: Unfold All Docstrings',
+        'DocuFold: Fold Current Docstring',
+        'DocuFold: Unfold Current Docstring',
+      ];
 
-      commandTitles.forEach((title) => {
+      commandTitles.forEach(title => {
         assert.ok(title.startsWith('DocuFold:'), 'Commands should have consistent prefix');
         assert.ok(title.includes(' '), 'Commands should be readable');
         assert.ok(title.length > 10, 'Commands should be descriptive');
@@ -147,7 +169,11 @@ suite('Accessibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Simulate folding operation
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Folding operations should not change focus unexpectedly
       // This is more of a design principle test
@@ -161,10 +187,17 @@ suite('Accessibility Tests', () => {
       const document = await vscode.workspace.openTextDocument(filePath);
 
       // Test that folding doesn't unexpectedly move cursor
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // This is a design principle - folding should preserve cursor context
-      assert.ok(ranges !== undefined, 'Should provide folding ranges while preserving cursor context');
+      assert.ok(
+        ranges !== undefined,
+        'Should provide folding ranges while preserving cursor context'
+      );
 
       console.log('Cursor position test completed');
     });
@@ -188,12 +221,19 @@ suite('Accessibility Tests', () => {
       const filePath = path.join(__dirname, '../../test-workspace/test-python.py');
       const document = await vscode.workspace.openTextDocument(filePath);
 
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Folding ranges should use VSCode's built-in folding indicators
       if (ranges && ranges.length > 0) {
-        ranges.forEach((range) => {
-          assert.ok(range.kind === vscode.FoldingRangeKind.Comment, 'Should use semantic folding kind');
+        ranges.forEach(range => {
+          assert.ok(
+            range.kind === vscode.FoldingRangeKind.Comment,
+            'Should use semantic folding kind'
+          );
         });
       }
 
@@ -217,9 +257,18 @@ suite('Accessibility Tests', () => {
           assert.ok(firstDocstring.preview.length <= 100, 'Preview should be concise');
 
           // Should not contain raw markup that would confuse screen readers
-          assert.ok(!firstDocstring.preview.includes('"""'), 'Preview should not contain raw markup');
-          assert.ok(!firstDocstring.preview.includes('/**'), 'Preview should not contain raw JSDoc');
-          assert.ok(!firstDocstring.preview.includes('///'), 'Preview should not contain raw C# markers');
+          assert.ok(
+            !firstDocstring.preview.includes('"""'),
+            'Preview should not contain raw markup'
+          );
+          assert.ok(
+            !firstDocstring.preview.includes('/**'),
+            'Preview should not contain raw JSDoc'
+          );
+          assert.ok(
+            !firstDocstring.preview.includes('///'),
+            'Preview should not contain raw C# markers'
+          );
         }
       }
 

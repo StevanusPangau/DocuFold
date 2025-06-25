@@ -68,7 +68,11 @@ export function getLanguageDisplayName(language: SupportedLanguage): string {
  * @param excludePatterns - Glob patterns to exclude
  * @returns True if the file should be processed
  */
-export function shouldProcessFile(document: vscode.TextDocument, includePatterns: string[], excludePatterns: string[]): boolean {
+export function shouldProcessFile(
+  document: vscode.TextDocument,
+  includePatterns: string[],
+  excludePatterns: string[]
+): boolean {
   const filePath = document.uri.fsPath;
 
   // Check if language is supported

@@ -32,7 +32,11 @@ suite('Real-World User Acceptance Tests', () => {
 
       // Simulate opening a Python file in a real project
       const docstrings = await detector.detectDocstrings(document);
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Real-world expectations
       assert.ok(docstrings.length > 0, 'Should detect docstrings in typical Python module');
@@ -111,7 +115,11 @@ class CustomerSegmentation:
       } as vscode.TextDocument;
 
       const docstrings = await detector.detectDocstrings(mockDocument);
-      const ranges = await provider.provideFoldingRanges(mockDocument, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        mockDocument,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Data science files typically have comprehensive documentation
       assert.ok(docstrings.length >= 4, 'Should detect multiple docstrings in data science code');
@@ -127,7 +135,11 @@ class CustomerSegmentation:
       const document = await vscode.workspace.openTextDocument(filePath);
 
       const docstrings = await detector.detectDocstrings(document);
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // TypeScript/React projects should have JSDoc comments
       assert.ok(docstrings.length > 0, 'Should detect JSDoc in TypeScript');
@@ -199,11 +211,18 @@ async function createProduct(req, res) {
       } as vscode.TextDocument;
 
       const docstrings = await detector.detectDocstrings(mockDocument);
-      const ranges = await provider.provideFoldingRanges(mockDocument, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        mockDocument,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Express APIs have detailed JSDoc with routes and examples
       assert.ok(docstrings.length >= 3, 'Should detect multiple JSDoc blocks in Express API');
-      assert.ok(ranges && ranges.length >= 3, 'Should provide folding ranges for API documentation');
+      assert.ok(
+        ranges && ranges.length >= 3,
+        'Should provide folding ranges for API documentation'
+      );
 
       console.log(`Express API: ${docstrings.length} JSDoc blocks detected`);
     });
@@ -225,7 +244,11 @@ async function createProduct(req, res) {
 
         const startTime = Date.now();
         const docstrings = await detector.detectDocstrings(document);
-        const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+        const ranges = await provider.provideFoldingRanges(
+          document,
+          {} as vscode.FoldingContext,
+          new vscode.CancellationTokenSource().token
+        );
         const endTime = Date.now();
 
         results.push({
@@ -237,16 +260,24 @@ async function createProduct(req, res) {
       }
 
       // Verify consistent behavior across languages
-      results.forEach((result) => {
-        assert.ok(result.processingTime < 100, `${result.language} should process quickly (${result.processingTime}ms)`);
+      results.forEach(result => {
+        assert.ok(
+          result.processingTime < 100,
+          `${result.language} should process quickly (${result.processingTime}ms)`
+        );
         if (result.docstrings > 0) {
-          assert.ok(result.ranges > 0, `${result.language} should provide folding ranges when docstrings exist`);
+          assert.ok(
+            result.ranges > 0,
+            `${result.language} should provide folding ranges when docstrings exist`
+          );
         }
       });
 
       console.log('Multi-file consistency results:');
-      results.forEach((result) => {
-        console.log(`  ${result.language}: ${result.docstrings} docstrings, ${result.ranges} ranges, ${result.processingTime}ms`);
+      results.forEach(result => {
+        console.log(
+          `  ${result.language}: ${result.docstrings} docstrings, ${result.ranges} ranges, ${result.processingTime}ms`
+        );
       });
     });
   });
@@ -260,13 +291,20 @@ async function createProduct(req, res) {
       const startTime = Date.now();
 
       // 1. Document opens, extension detects language
-      assert.ok(detector.isLanguageSupported(document.languageId as any), 'Should support document language');
+      assert.ok(
+        detector.isLanguageSupported(document.languageId as any),
+        'Should support document language'
+      );
 
       // 2. Extension detects docstrings
       const docstrings = await detector.detectDocstrings(document);
 
       // 3. Extension provides folding ranges
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // 4. Status bar updates
       statusBarService.updateDocumentStatus({
@@ -284,7 +322,9 @@ async function createProduct(req, res) {
       assert.ok(docstrings.length > 0, 'Should detect docstrings on file open');
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges on file open');
 
-      console.log(`File opening workflow: ${totalTime}ms, ${docstrings.length} docstrings, ${ranges.length} ranges`);
+      console.log(
+        `File opening workflow: ${totalTime}ms, ${docstrings.length} docstrings, ${ranges.length} ranges`
+      );
     });
 
     test('should handle auto-fold state management', async () => {
@@ -316,7 +356,11 @@ async function createProduct(req, res) {
       } as vscode.TextDocument;
 
       const docstrings = await detector.detectDocstrings(mockEmptyDocument);
-      const ranges = await provider.provideFoldingRanges(mockEmptyDocument, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        mockEmptyDocument,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       assert.strictEqual(docstrings.length, 0, 'Should return empty array for empty file');
       assert.ok(ranges && ranges.length === 0, 'Should return empty folding ranges for empty file');
@@ -330,17 +374,26 @@ async function createProduct(req, res) {
 
       const startTime = Date.now();
       const docstrings = await detector.detectDocstrings(document);
-      const ranges = await provider.provideFoldingRanges(document, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        document,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
       const endTime = Date.now();
 
       const processingTime = endTime - startTime;
 
       // Should handle large files within reasonable time
-      assert.ok(processingTime < 2000, `Large file should process within 2 seconds (${processingTime}ms)`);
+      assert.ok(
+        processingTime < 2000,
+        `Large file should process within 2 seconds (${processingTime}ms)`
+      );
       assert.ok(docstrings.length > 0, 'Should detect docstrings in large file');
       assert.ok(ranges && ranges.length > 0, 'Should provide folding ranges for large file');
 
-      console.log(`Large file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings, ${ranges.length} ranges`);
+      console.log(
+        `Large file (${document.lineCount} lines): ${processingTime}ms, ${docstrings.length} docstrings, ${ranges.length} ranges`
+      );
     });
 
     test('should handle files with mixed content', async () => {
@@ -394,14 +447,21 @@ if __name__ == "__main__":
       } as vscode.TextDocument;
 
       const docstrings = await detector.detectDocstrings(mockDocument);
-      const ranges = await provider.provideFoldingRanges(mockDocument, {} as vscode.FoldingContext, new vscode.CancellationTokenSource().token);
+      const ranges = await provider.provideFoldingRanges(
+        mockDocument,
+        {} as vscode.FoldingContext,
+        new vscode.CancellationTokenSource().token
+      );
 
       // Should correctly identify only actual docstrings
       assert.ok(docstrings.length >= 3, 'Should detect proper docstrings in mixed content');
-      assert.ok(ranges && ranges.length >= 3, 'Should provide folding ranges for proper docstrings');
+      assert.ok(
+        ranges && ranges.length >= 3,
+        'Should provide folding ranges for proper docstrings'
+      );
 
       // Verify it doesn't pick up regular comments
-      const hasRegularComments = docstrings.some((d) => d.content.includes('# Regular comment'));
+      const hasRegularComments = docstrings.some(d => d.content.includes('# Regular comment'));
       assert.ok(!hasRegularComments, 'Should not detect regular comments as docstrings');
 
       console.log(`Mixed content: ${docstrings.length} docstrings detected`);
@@ -416,7 +476,11 @@ if __name__ == "__main__":
       // Test with auto-fold disabled
       await configService.updateConfiguration('autoFoldEnabled', false);
       const updatedConfig = await configService.getConfiguration();
-      assert.strictEqual(updatedConfig.autoFoldEnabled, false, 'Should respect auto-fold disabled setting');
+      assert.strictEqual(
+        updatedConfig.autoFoldEnabled,
+        false,
+        'Should respect auto-fold disabled setting'
+      );
 
       // Restore original configuration
       await configService.updateConfiguration('autoFoldEnabled', originalConfig.autoFoldEnabled);

@@ -8,7 +8,10 @@
  * @param wait - Wait time in milliseconds
  * @returns Debounced function
  */
-export function debounce<T extends (...args: any[]) => any>(func: T, wait: number): (...args: Parameters<T>) => void {
+export function debounce<T extends (...args: any[]) => any>(
+  func: T,
+  wait: number
+): (...args: Parameters<T>) => void {
   let timeout: NodeJS.Timeout | undefined;
 
   return (...args: Parameters<T>) => {
@@ -28,7 +31,10 @@ export function debounce<T extends (...args: any[]) => any>(func: T, wait: numbe
  * @param limit - Time limit in milliseconds
  * @returns Throttled function
  */
-export function throttle<T extends (...args: any[]) => any>(func: T, limit: number): (...args: Parameters<T>) => void {
+export function throttle<T extends (...args: any[]) => any>(
+  func: T,
+  limit: number
+): (...args: Parameters<T>) => void {
   let inThrottle = false;
 
   return (...args: Parameters<T>) => {
@@ -200,7 +206,7 @@ export class BatchProcessor<T> {
 
       // Add delay between batches to prevent blocking
       if (i + this.batchSize < items.length) {
-        await new Promise((resolve) => setTimeout(resolve, this.processingDelay));
+        await new Promise(resolve => setTimeout(resolve, this.processingDelay));
       }
     }
 

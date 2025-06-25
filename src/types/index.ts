@@ -3,7 +3,15 @@ import * as vscode from 'vscode';
 /**
  * Supported programming languages for docstring detection
  */
-export type SupportedLanguage = 'python' | 'javascript' | 'typescript' | 'java' | 'csharp' | 'php' | 'jsx-tags' | 'tsx-tags';
+export type SupportedLanguage =
+  | 'python'
+  | 'javascript'
+  | 'typescript'
+  | 'java'
+  | 'csharp'
+  | 'php'
+  | 'jsx-tags'
+  | 'tsx-tags';
 
 /**
  * Docstring detection pattern for a specific language

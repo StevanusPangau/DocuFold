@@ -213,7 +213,9 @@ export class DocstringDetector {
 
     // Log performance for large files
     if (document.lineCount > 1000) {
-      console.log(`DocuFold: Detected ${docstrings.length} docstrings in ${elapsed.toFixed(2)}ms for ${document.fileName}`);
+      console.log(
+        `DocuFold: Detected ${docstrings.length} docstrings in ${elapsed.toFixed(2)}ms for ${document.fileName}`
+      );
     }
 
     return docstrings;
@@ -225,7 +227,10 @@ export class DocstringDetector {
    * @param language - Detected language
    * @returns Array of detected docstrings
    */
-  private async performDetection(document: vscode.TextDocument, language: SupportedLanguage): Promise<DocstringInfo[]> {
+  private async performDetection(
+    document: vscode.TextDocument,
+    language: SupportedLanguage
+  ): Promise<DocstringInfo[]> {
     const patterns = this.patterns.get(language);
     if (!patterns || patterns.length === 0) {
       return [];
@@ -255,7 +260,12 @@ export class DocstringDetector {
    * @param pattern - Detection pattern
    * @returns Array of detected docstrings
    */
-  private detectMultilineDocstrings(_document: vscode.TextDocument, lines: string[], language: SupportedLanguage, pattern: DocstringPattern): DocstringInfo[] {
+  private detectMultilineDocstrings(
+    _document: vscode.TextDocument,
+    lines: string[],
+    language: SupportedLanguage,
+    pattern: DocstringPattern
+  ): DocstringInfo[] {
     const docstrings: DocstringInfo[] = [];
     let i = 0;
 
@@ -340,7 +350,12 @@ export class DocstringDetector {
    * @param pattern - Detection pattern
    * @returns Array of detected docstrings
    */
-  private detectSingleLineDocstrings(_document: vscode.TextDocument, lines: string[], language: SupportedLanguage, pattern: DocstringPattern): DocstringInfo[] {
+  private detectSingleLineDocstrings(
+    _document: vscode.TextDocument,
+    lines: string[],
+    language: SupportedLanguage,
+    pattern: DocstringPattern
+  ): DocstringInfo[] {
     const docstrings: DocstringInfo[] = [];
     let i = 0;
 
@@ -531,7 +546,7 @@ export class DocstringDetector {
    */
   private removeDuplicates(docstrings: DocstringInfo[]): DocstringInfo[] {
     const seen = new Set<string>();
-    return docstrings.filter((docstring) => {
+    return docstrings.filter(docstring => {
       const key = `${docstring.startPosition.line}-${docstring.startPosition.character}-${docstring.endPosition.line}-${docstring.endPosition.character}`;
       if (seen.has(key)) {
         return false;

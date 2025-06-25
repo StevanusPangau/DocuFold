@@ -14,7 +14,12 @@ export class FoldingCommands {
   private configurationService: ConfigurationService;
   private statusBarService: StatusBarService | undefined;
 
-  constructor(context: vscode.ExtensionContext, docstringDetector?: DocstringDetector, configurationService?: ConfigurationService, statusBarService?: StatusBarService) {
+  constructor(
+    context: vscode.ExtensionContext,
+    docstringDetector?: DocstringDetector,
+    configurationService?: ConfigurationService,
+    statusBarService?: StatusBarService
+  ) {
     this.context = context;
     this.docstringDetector = docstringDetector || new DocstringDetector();
     this.configurationService = configurationService || new ConfigurationService();
@@ -27,13 +32,25 @@ export class FoldingCommands {
   registerCommands(): void {
     const commands = [
       vscode.commands.registerCommand('docufold.toggleAutoFold', this.toggleAutoFold.bind(this)),
-      vscode.commands.registerCommand('docufold.foldAllDocstrings', this.foldAllDocstrings.bind(this)),
-      vscode.commands.registerCommand('docufold.unfoldAllDocstrings', this.unfoldAllDocstrings.bind(this)),
-      vscode.commands.registerCommand('docufold.foldCurrentDocstring', this.foldCurrentDocstring.bind(this)),
-      vscode.commands.registerCommand('docufold.unfoldCurrentDocstring', this.unfoldCurrentDocstring.bind(this)),
+      vscode.commands.registerCommand(
+        'docufold.foldAllDocstrings',
+        this.foldAllDocstrings.bind(this)
+      ),
+      vscode.commands.registerCommand(
+        'docufold.unfoldAllDocstrings',
+        this.unfoldAllDocstrings.bind(this)
+      ),
+      vscode.commands.registerCommand(
+        'docufold.foldCurrentDocstring',
+        this.foldCurrentDocstring.bind(this)
+      ),
+      vscode.commands.registerCommand(
+        'docufold.unfoldCurrentDocstring',
+        this.unfoldCurrentDocstring.bind(this)
+      ),
     ];
 
-    commands.forEach((command) => this.context.subscriptions.push(command));
+    commands.forEach(command => this.context.subscriptions.push(command));
   }
 
   /**
@@ -45,7 +62,9 @@ export class FoldingCommands {
       const newAutoFoldState = !config.autoFoldEnabled;
 
       // Update configuration
-      await vscode.workspace.getConfiguration('docufold').update('autoFoldEnabled', newAutoFoldState, vscode.ConfigurationTarget.Global);
+      await vscode.workspace
+        .getConfiguration('docufold')
+        .update('autoFoldEnabled', newAutoFoldState, vscode.ConfigurationTarget.Global);
 
       // Show status message
       const status = newAutoFoldState ? 'enabled' : 'disabled';
@@ -94,7 +113,9 @@ export class FoldingCommands {
       }
 
       // Create folding ranges for multi-line docstrings
-      const foldingRanges = docstrings.filter((docstring) => docstring.endPosition.line > docstring.startPosition.line).map((docstring) => new vscode.Range(docstring.startPosition, docstring.endPosition));
+      const foldingRanges = docstrings
+        .filter(docstring => docstring.endPosition.line > docstring.startPosition.line)
+        .map(docstring => new vscode.Range(docstring.startPosition, docstring.endPosition));
 
       if (foldingRanges.length === 0) {
         vscode.window.showInformationMessage('DocuFold: No multi-line docstrings found to fold');
@@ -105,7 +126,7 @@ export class FoldingCommands {
       await vscode.commands.executeCommand('editor.fold', {
         levels: 1,
         direction: 'up',
-        selectionLines: foldingRanges.map((range) => range.start.line),
+        selectionLines: foldingRanges.map(range => range.start.line),
       });
 
       // Update status bar
@@ -191,7 +212,11 @@ export class FoldingCommands {
       const docstrings = await this.docstringDetector.detectDocstrings(document);
 
       // Find docstring at current position
-      const currentDocstring = docstrings.find((docstring) => position.line >= docstring.startPosition.line && position.line <= docstring.endPosition.line);
+      const currentDocstring = docstrings.find(
+        docstring =>
+          position.line >= docstring.startPosition.line &&
+          position.line <= docstring.endPosition.line
+      );
 
       if (!currentDocstring) {
         vscode.window.showInformationMessage('DocuFold: No docstring found at cursor position');
@@ -205,7 +230,10 @@ export class FoldingCommands {
       }
 
       // Create selection for the docstring and fold it
-      const docstringRange = new vscode.Range(currentDocstring.startPosition, currentDocstring.endPosition);
+      const docstringRange = new vscode.Range(
+        currentDocstring.startPosition,
+        currentDocstring.endPosition
+      );
       editor.selection = new vscode.Selection(docstringRange.start, docstringRange.end);
 
       await vscode.commands.executeCommand('editor.fold');
@@ -241,7 +269,11 @@ export class FoldingCommands {
       const docstrings = await this.docstringDetector.detectDocstrings(document);
 
       // Find docstring at current position
-      const currentDocstring = docstrings.find((docstring) => position.line >= docstring.startPosition.line && position.line <= docstring.endPosition.line);
+      const currentDocstring = docstrings.find(
+        docstring =>
+          position.line >= docstring.startPosition.line &&
+          position.line <= docstring.endPosition.line
+      );
 
       if (!currentDocstring) {
         vscode.window.showInformationMessage('DocuFold: No docstring found at cursor position');
@@ -249,7 +281,10 @@ export class FoldingCommands {
       }
 
       // Create selection for the docstring and unfold it
-      const docstringRange = new vscode.Range(currentDocstring.startPosition, currentDocstring.endPosition);
+      const docstringRange = new vscode.Range(
+        currentDocstring.startPosition,
+        currentDocstring.endPosition
+      );
       editor.selection = new vscode.Selection(docstringRange.start, docstringRange.end);
 
       await vscode.commands.executeCommand('editor.unfold');

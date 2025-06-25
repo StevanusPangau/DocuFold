@@ -20,9 +20,15 @@ suite('Extension Test Suite', () => {
   test('Should register all commands', async () => {
     const commands = await vscode.commands.getCommands(true);
 
-    const expectedCommands = ['docufold.toggleAutoFold', 'docufold.foldAllDocstrings', 'docufold.unfoldAllDocstrings', 'docufold.foldCurrentDocstring', 'docufold.unfoldCurrentDocstring'];
+    const expectedCommands = [
+      'docufold.toggleAutoFold',
+      'docufold.foldAllDocstrings',
+      'docufold.unfoldAllDocstrings',
+      'docufold.foldCurrentDocstring',
+      'docufold.unfoldCurrentDocstring',
+    ];
 
-    expectedCommands.forEach((cmd) => {
+    expectedCommands.forEach(cmd => {
       assert.ok(commands.includes(cmd), `Command ${cmd} should be registered`);
     });
   });

@@ -57,20 +57,31 @@ export function activate(context: vscode.ExtensionContext) {
     const foldingRangeProvider = new DocuFoldRangeProvider(docstringDetector);
     const hoverProvider = new DocuFoldHoverProvider(docstringDetector, configurationService);
     statusBarService = new StatusBarService();
-    const foldingCommands = new FoldingCommands(context, docstringDetector, configurationService, statusBarService);
+    const foldingCommands = new FoldingCommands(
+      context,
+      docstringDetector,
+      configurationService,
+      statusBarService
+    );
 
     // Register commands
     foldingCommands.registerCommands();
 
     // Register providers for supported languages
     const supportedLanguages = getSupportedLanguageIds();
-    supportedLanguages.forEach((languageId) => {
+    supportedLanguages.forEach(languageId => {
       // Register folding range provider
-      const foldingProvider = vscode.languages.registerFoldingRangeProvider({ language: languageId }, foldingRangeProvider);
+      const foldingProvider = vscode.languages.registerFoldingRangeProvider(
+        { language: languageId },
+        foldingRangeProvider
+      );
       context.subscriptions.push(foldingProvider);
 
       // Register hover provider
-      const hoverProviderRegistration = vscode.languages.registerHoverProvider({ language: languageId }, hoverProvider);
+      const hoverProviderRegistration = vscode.languages.registerHoverProvider(
+        { language: languageId },
+        hoverProvider
+      );
       context.subscriptions.push(hoverProviderRegistration);
     });
 
@@ -81,7 +92,7 @@ export function activate(context: vscode.ExtensionContext) {
     }
 
     // Listen for configuration changes
-    const configChangeListener = configurationService.onConfigurationChanged((newConfig) => {
+    const configChangeListener = configurationService.onConfigurationChanged(newConfig => {
       if (statusBarService) {
         if (newConfig.enableStatusBar) {
           statusBarService.show();
@@ -98,7 +109,9 @@ export function activate(context: vscode.ExtensionContext) {
     console.log('DocuFold extension initialized successfully!');
   } catch (error) {
     console.error('Failed to activate DocuFold extension:', error);
-    vscode.window.showErrorMessage('Failed to activate DocuFold extension. Please check the console for details.');
+    vscode.window.showErrorMessage(
+      'Failed to activate DocuFold extension. Please check the console for details.'
+    );
   }
 }
 
