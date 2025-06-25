@@ -1,10 +1,50 @@
+/**
+ * @fileoverview Configuration service for DocuFold extension settings management.
+ *
+ * This module provides comprehensive configuration management including reading,
+ * validation, caching, and monitoring of user and workspace settings. It handles
+ * the complex precedence rules between different configuration sources and provides
+ * real-time updates when settings change.
+ *
+ * @author DocuFold Team
+ * @version 0.0.1
+ * @since 2024-06-25
+ */
+
 import * as vscode from 'vscode';
 import { DocuFoldConfiguration, LanguageConfiguration, PerformanceSettings, AdvancedSettings, ConfigurationValidationResult } from '../types';
 import { getSupportedLanguageIds } from '../utils/languageUtils';
 
 /**
- * Configuration service for DocuFold extension
- * Handles reading, validation, and monitoring of user/workspace settings
+ * Configuration service for DocuFold extension settings management.
+ *
+ * This service handles all aspects of configuration management including:
+ * - Reading settings from multiple sources (user, workspace, folder)
+ * - Validating and sanitizing configuration values
+ * - Caching configurations for performance
+ * - Monitoring configuration changes and notifying listeners
+ * - Providing proper defaults for all settings
+ *
+ * The service supports 25+ configuration options across multiple categories:
+ * - Basic settings (auto-folding, preview length, etc.)
+ * - File pattern settings (include/exclude patterns)
+ * - Language-specific settings for each supported language
+ * - Performance settings (caching, debouncing, file size limits)
+ * - Advanced settings (user folding respect, contextual folding, etc.)
+ *
+ * @example
+ * ```typescript
+ * const configService = new ConfigurationService();
+ * const config = configService.getConfiguration();
+ *
+ * // Listen for changes
+ * const disposable = configService.onConfigurationChanged((newConfig) => {
+ *   console.log('Configuration updated:', newConfig);
+ * });
+ *
+ * // Update a setting
+ * await configService.updateConfiguration('autoFoldEnabled', false);
+ * ```
  */
 export class ConfigurationService {
   private static readonly CONFIGURATION_SECTION = 'docufold';

@@ -1,10 +1,27 @@
+/**
+ * @fileoverview VSCode folding range provider implementation for DocuFold extension.
+ *
+ * This module implements the VSCode FoldingRangeProvider interface to provide intelligent
+ * docstring folding capabilities with performance optimizations, caching, and auto-folding
+ * functionality across multiple programming languages.
+ *
+ * @author DocuFold Team
+ * @version 0.0.1
+ * @since 2024-06-25
+ */
+
 import * as vscode from 'vscode';
 import { DocstringDetector } from '../detectors/docstringDetector';
 import { DocstringInfo } from '../types';
 import { TTLCache, PerformanceTimer, debounce } from '../utils/performanceUtils';
 
 /**
- * Cache entry for folding ranges
+ * Cache entry interface for storing folding ranges with metadata.
+ *
+ * @interface FoldingRangeCache
+ * @property {vscode.FoldingRange[]} ranges - The calculated folding ranges
+ * @property {DocstringInfo[]} docstrings - The detected docstrings used to generate ranges
+ * @property {number} timestamp - Cache entry timestamp for TTL validation
  */
 interface FoldingRangeCache {
   ranges: vscode.FoldingRange[];
@@ -13,8 +30,32 @@ interface FoldingRangeCache {
 }
 
 /**
- * VSCode folding range provider for DocuFold extension
- * Implements Tasks 3.1-3.8: Complete folding range provider with performance optimizations
+ * VSCode folding range provider for DocuFold extension.
+ *
+ * This class implements the VSCode FoldingRangeProvider interface to provide intelligent
+ * docstring folding capabilities. It includes performance optimizations such as TTL caching,
+ * debounced cleanup, and support for large files.
+ *
+ * Key features:
+ * - Auto-folding on document open
+ * - Manual fold/unfold commands
+ * - Performance-optimized for large files (5000+ lines)
+ * - TTL caching to avoid redundant processing
+ * - Cancellation token support for responsive UI
+ *
+ * @implements {vscode.FoldingRangeProvider}
+ *
+ * @example
+ * ```typescript
+ * const detector = new DocstringDetector();
+ * const provider = new DocuFoldRangeProvider(detector);
+ *
+ * // Register with VSCode
+ * vscode.languages.registerFoldingRangeProvider('python', provider);
+ *
+ * // Apply auto-folding
+ * await provider.applyAutoFolding(document);
+ * ```
  */
 export class DocuFoldRangeProvider implements vscode.FoldingRangeProvider {
   private cache: TTLCache<string, FoldingRangeCache> = new TTLCache(5 * 60 * 1000); // 5 minutes

@@ -1,12 +1,41 @@
+/**
+ * @fileoverview Docstring detection engine for multiple programming languages.
+ *
+ * This module provides intelligent docstring detection capabilities across 8+ programming
+ * languages with performance optimizations including caching, debouncing, and pattern-based
+ * extensibility. It serves as the core detection engine for the DocuFold extension.
+ *
+ * @author DocuFold Team
+ * @version 0.0.1
+ * @since 2024-06-25
+ */
+
 import * as vscode from 'vscode';
 import { DocstringInfo, DocstringPattern, SupportedLanguage } from '../types';
 import { detectLanguage } from '../utils/languageUtils';
 import { TTLCache, debounce, PerformanceTimer } from '../utils/performanceUtils';
 
-// Cache key interface removed as it's not directly used (cache key is created as string)
-
 /**
- * Main docstring detector class with extensible pattern registry and performance optimizations
+ * Main docstring detector class with extensible pattern registry and performance optimizations.
+ *
+ * This class provides comprehensive docstring detection across multiple programming languages
+ * with built-in performance optimizations including TTL caching, debounced cleanup, and
+ * pattern-based extensibility for easy addition of new language support.
+ *
+ * Supported languages include:
+ * - Python (triple-quoted strings)
+ * - JavaScript/TypeScript (JSDoc comments)
+ * - Java (Javadoc comments)
+ * - C# (XML documentation and block comments)
+ * - PHP (PHPDoc comments)
+ * - JSX/TSX (JSDoc comments)
+ *
+ * @example
+ * ```typescript
+ * const detector = new DocstringDetector();
+ * const docstrings = await detector.detectDocstrings(document);
+ * console.log(`Found ${docstrings.length} docstrings`);
+ * ```
  */
 export class DocstringDetector {
   private patterns: Map<SupportedLanguage, DocstringPattern[]> = new Map();
@@ -20,7 +49,18 @@ export class DocstringDetector {
   }
 
   /**
-   * Initialize language patterns for supported languages
+   * Initialize language patterns for all supported languages.
+   *
+   * This method sets up the detection patterns for each supported programming language.
+   * Each language can have multiple patterns to handle different documentation styles.
+   *
+   * Patterns include:
+   * - Start/end markers for multi-line docstrings
+   * - Single-line pattern matching
+   * - Language-specific formatting rules
+   *
+   * @private
+   * @memberof DocstringDetector
    */
   private initializePatterns(): void {
     // Python docstring patterns (multiple patterns per language)
@@ -115,9 +155,30 @@ export class DocstringDetector {
   }
 
   /**
-   * Detect all docstrings in a document with caching and performance optimization
-   * @param document - VSCode text document
-   * @returns Array of detected docstring information
+   * Detect all docstrings in a document with caching and performance optimization.
+   *
+   * This is the main entry point for docstring detection. It performs language detection,
+   * checks the cache for existing results, and delegates to the appropriate detection
+   * methods based on the document's language.
+   *
+   * Performance features:
+   * - TTL caching to avoid redundant processing
+   * - Performance timing for large files
+   * - Debounced cache cleanup
+   * - Language-specific optimization
+   *
+   * @param document - The VSCode text document to analyze
+   * @returns Promise resolving to an array of detected docstring information
+   *
+   * @example
+   * ```typescript
+   * const detector = new DocstringDetector();
+   * const docstrings = await detector.detectDocstrings(document);
+   *
+   * for (const docstring of docstrings) {
+   *   console.log(`Found docstring at line ${docstring.startPosition.line}`);
+   * }
+   * ```
    */
   async detectDocstrings(document: vscode.TextDocument): Promise<DocstringInfo[]> {
     // Start performance measurement
