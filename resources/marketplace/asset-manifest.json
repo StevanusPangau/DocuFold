@@ -1,0 +1,35 @@
+{
+  "generated": "2025-06-25T03:14:06.522Z",
+  "version": "0.0.1",
+  "assets": {
+    "icon": {
+      "source": "resources/icon.svg",
+      "formats": [
+        "PNG"
+      ],
+      "sizes": [
+        16,
+        32,
+        64,
+        128,
+        256
+      ],
+      "purpose": "Extension icon for VSCode marketplace"
+    },
+    "banner": {
+      "source": "resources/banner.svg",
+      "formats": [
+        "PNG",
+        "SVG"
+      ],
+      "sizes": [
+        1200
+      ],
+      "purpose": "Marketplace banner and promotional material"
+    }
+  },
+  "instructions": {
+    "icon": "Convert to 128x128 PNG for package.json icon field",
+    "banner": "Optional marketplace banner, recommended 1200x300 PNG"
+  }
+}

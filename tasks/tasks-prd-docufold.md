@@ -129,7 +129,7 @@ Based on PRD: `prd-docufold.md`
   - [x] 7.1 Write comprehensive README.md with features, installation, and usage
   - [x] 7.2 Create CHANGELOG.md with version history
   - [x] 7.3 Add inline code documentation and JSDoc comments
-  - [ ] 7.4 Create extension icon and marketplace assets
-  - [ ] 7.5 Setup CI/CD pipeline for automated testing and publishing
+  - [x] 7.4 Create extension icon and marketplace assets
+  - [x] 7.5 Setup CI/CD pipeline for automated testing and publishing
   - [ ] 7.6 Package extension for VSCode marketplace
   - [ ] 7.7 Publish extension to VSCode marketplace

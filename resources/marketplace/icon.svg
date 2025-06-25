@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="128" height="128" viewBox="0 0 128 128" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4A90E2;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#357ABD;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="foldGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#F5F5F5;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#E8E8E8;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2E3440;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#434C5E;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <circle cx="64" cy="64" r="60" fill="url(#bgGradient)" stroke="#2E3440" stroke-width="2"/>
+  
+  <!-- Document/Code representation -->
+  <rect x="24" y="20" width="80" height="88" rx="4" fill="url(#foldGradient)" stroke="#B8C5D6" stroke-width="1.5"/>
+  
+  <!-- Code lines (unfolded) -->
+  <rect x="32" y="28" width="48" height="3" rx="1.5" fill="url(#textGradient)"/>
+  <rect x="32" y="36" width="64" height="3" rx="1.5" fill="url(#textGradient)"/>
+  <rect x="32" y="44" width="56" height="3" rx="1.5" fill="url(#textGradient)"/>
+  
+  <!-- Folded section indicator -->
+  <rect x="28" y="54" width="72" height="20" rx="3" fill="#4A90E2" fill-opacity="0.2" stroke="#4A90E2" stroke-width="1.5" stroke-dasharray="3,2"/>
+  
+  <!-- Fold indicator text/symbol -->
+  <text x="64" y="67" font-family="Arial, sans-serif" font-size="12" font-weight="bold" text-anchor="middle" fill="#4A90E2">...</text>
+  
+  <!-- More code lines (after fold) -->
+  <rect x="32" y="80" width="52" height="3" rx="1.5" fill="url(#textGradient)"/>
+  <rect x="32" y="88" width="44" height="3" rx="1.5" fill="url(#textGradient)"/>
+  <rect x="32" y="96" width="60" height="3" rx="1.5" fill="url(#textGradient)"/>
+  
+  <!-- Folding arrow/indicator -->
+  <path d="M16 64 L20 60 L20 62 L24 62 L24 66 L20 66 L20 68 Z" fill="#4A90E2"/>
+  
+  <!-- DocuFold branding element -->
+  <circle cx="92" cy="32" r="8" fill="#FF6B6B" stroke="#FFFFFF" stroke-width="1.5"/>
+  <text x="92" y="36" font-family="Arial, sans-serif" font-size="10" font-weight="bold" text-anchor="middle" fill="white">D</text>
+</svg> 

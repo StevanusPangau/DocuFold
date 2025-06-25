@@ -41,8 +41,8 @@
     "developer-tools"
   ],
   "galleryBanner": {
-    "color": "#1e1e1e",
-    "theme": "dark"
+    "color": "#3B82F6",
+    "theme": "light"
   },
   "icon": "resources/icon.png",
   "activationEvents": [
@@ -363,13 +363,23 @@
     "compile": "npm run build",
     "build": "node esbuild.js",
     "build:watch": "node esbuild.js --watch",
-    "package": "node esbuild.js --production",
+    "package": "vsce package",
     "compile-tsc": "tsc -p ./",
     "watch": "npm run build:watch",
     "pretest": "npm run compile-tsc && npm run lint",
     "lint": "eslint src --ext ts",
+    "lint:fix": "eslint src --ext ts --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format:check": "prettier --check \"src/**/*.ts\" \"test/**/*.ts\"",
+    "type-check": "tsc --noEmit",
     "test": "vscode-test",
-    "clean": "rimraf out"
+    "test:unit": "npm run test",
+    "test:integration": "npm run test",
+    "test:coverage": "c8 npm run test",
+    "clean": "rimraf out *.vsix",
+    "generate-assets": "node scripts/generate-assets.js",
+    "publish": "vsce publish",
+    "publish:ovsx": "ovsx publish"
   },
   "devDependencies": {
     "@types/glob": "^8.1.0",
@@ -381,10 +391,15 @@
     "@typescript-eslint/parser": "^6.15.0",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.8",
+    "@vscode/vsce": "^3.0.0",
+    "audit-ci": "^7.0.1",
+    "c8": "^10.1.2",
     "esbuild": "^0.25.5",
     "eslint": "^8.56.0",
     "glob": "^11.0.3",
     "mocha": "^11.7.0",
+    "ovsx": "^0.9.5",
+    "prettier": "^3.3.3",
     "rimraf": "^6.0.1",
     "sinon": "^18.0.1",
     "typescript": "^5.3.3"
