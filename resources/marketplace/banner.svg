@@ -44,7 +44,7 @@
   </g>
   
   <!-- Title -->
-  <text x="240" y="120" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1F2937" filter="url(#glow)">DocuFold</text>
+  <text x="240" y="120" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1F2937">DocuFold</text>
   
   <!-- Subtitle -->
   <text x="240" y="150" font-family="Arial, sans-serif" font-size="24" font-weight="500" fill="#4B5563">Smart Docstring Folding for VSCode</text>
