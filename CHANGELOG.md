@@ -165,6 +165,6 @@ For information about contributing to DocuFold, please see our [Contributing Gui
 
 ## Support
 
-- **Bug Reports**: [GitHub Issues](https://github.com/docufold/docufold/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/docufold/docufold/discussions)
-- **Documentation**: [Project Wiki](https://github.com/docufold/docufold/wiki)
+- **Bug Reports**: [GitHub Issues](https://github.com/StevanusPangau/DocuFold/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/StevanusPangau/DocuFold/discussions)
+- **Documentation**: [Project Wiki](https://github.com/StevanusPangau/DocuFold/wiki)

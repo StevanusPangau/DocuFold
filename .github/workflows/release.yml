@@ -255,3 +255,4 @@ jobs:
           echo "GitHub Release: ${{ needs.create-release.result }}"
           echo "Marketplace: ${{ needs.publish-marketplace.result }}"
           exit 1
+ 

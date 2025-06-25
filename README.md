@@ -106,7 +106,7 @@ code --install-extension docufold.docufold
 
 ### Manual Installation
 
-1. Download the `.vsix` file from [Releases](https://github.com/docufold/docufold/releases)
+1. Download the `.vsix` file from [Releases](https://github.com/StevanusPangau/DocuFold/releases)
 2. Open VSCode
 3. Run `Extensions: Install from VSIX...` command
 4. Select the downloaded `.vsix` file
@@ -371,7 +371,7 @@ We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) f
 
 ```bash
 # Clone the repository
-git clone https://github.com/docufold/docufold.git
+git clone https://github.com/StevanusPangau/DocuFold.git
 cd docufold
 
 # Install dependencies
@@ -416,9 +416,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 📞 Support
 
-- **Issues**: [GitHub Issues](https://github.com/docufold/docufold/issues)
-- **Feature Requests**: [GitHub Discussions](https://github.com/docufold/docufold/discussions)
-- **Documentation**: [Wiki](https://github.com/docufold/docufold/wiki)
+- **Issues**: [GitHub Issues](https://github.com/StevanusPangau/DocuFold/issues)
+- **Feature Requests**: [GitHub Discussions](https://github.com/StevanusPangau/DocuFold/discussions)
+- **Documentation**: [Wiki](https://github.com/StevanusPangau/DocuFold/wiki)
 
 ---
 

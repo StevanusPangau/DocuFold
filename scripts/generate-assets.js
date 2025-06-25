@@ -188,3 +188,4 @@ try {
   console.error('\n❌ Error during asset generation:', error.message);
   process.exit(1);
 }
+ 
