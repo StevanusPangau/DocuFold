@@ -1,8 +1,8 @@
 import * as vscode from 'vscode';
-import { DocstringDetector } from '@/detectors/docstringDetector';
-import { ConfigurationService } from '@/services/configurationService';
-import { StatusBarService } from '@/services/statusBarService';
-import { getSupportedLanguageIds } from '@/utils/languageUtils';
+import { DocstringDetector } from '../detectors/docstringDetector';
+import { ConfigurationService } from '../services/configurationService';
+import { StatusBarService } from '../services/statusBarService';
+import { getSupportedLanguageIds } from '../utils/languageUtils';
 
 /**
  * Folding commands for DocuFold extension

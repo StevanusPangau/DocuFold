@@ -1,6 +1,6 @@
 import * as vscode from 'vscode';
-import { DocuFoldConfiguration, LanguageConfiguration, PerformanceSettings, AdvancedSettings, ConfigurationValidationResult } from '@/types';
-import { getSupportedLanguageIds } from '@/utils/languageUtils';
+import { DocuFoldConfiguration, LanguageConfiguration, PerformanceSettings, AdvancedSettings, ConfigurationValidationResult } from '../types';
+import { getSupportedLanguageIds } from '../utils/languageUtils';
 
 /**
  * Configuration service for DocuFold extension

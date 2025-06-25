@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { DocstringDetector } from '@/detectors/docstringDetector';
-import { DocstringInfo } from '@/types';
-import { TTLCache, PerformanceTimer, debounce } from '@/utils/performanceUtils';
+import { DocstringDetector } from '../detectors/docstringDetector';
+import { DocstringInfo } from '../types';
+import { TTLCache, PerformanceTimer, debounce } from '../utils/performanceUtils';
 
 /**
  * Cache entry for folding ranges

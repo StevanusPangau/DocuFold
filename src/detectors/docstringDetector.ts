@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { DocstringInfo, DocstringPattern, SupportedLanguage } from '@/types';
-import { detectLanguage } from '@/utils/languageUtils';
-import { TTLCache, debounce, PerformanceTimer } from '@/utils/performanceUtils';
+import { DocstringInfo, DocstringPattern, SupportedLanguage } from '../types';
+import { detectLanguage } from '../utils/languageUtils';
+import { TTLCache, debounce, PerformanceTimer } from '../utils/performanceUtils';
 
 // Cache key interface removed as it's not directly used (cache key is created as string)
 

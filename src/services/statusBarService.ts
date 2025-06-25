@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { DocumentStatus } from '@/types';
+import { DocumentStatus } from '../types';
 
 /**
  * Status bar service for DocuFold extension

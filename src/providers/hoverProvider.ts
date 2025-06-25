@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
-import { DocstringDetector } from '@/detectors/docstringDetector';
-import { ConfigurationService } from '@/services/configurationService';
-import { getSupportedLanguageIds } from '@/utils/languageUtils';
+import { DocstringDetector } from '../detectors/docstringDetector';
+import { ConfigurationService } from '../services/configurationService';
+import { getSupportedLanguageIds } from '../utils/languageUtils';
 
 /**
  * Hover provider for DocuFold extension

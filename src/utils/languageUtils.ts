@@ -1,5 +1,5 @@
 import * as vscode from 'vscode';
-import { SupportedLanguage } from '@/types';
+import { SupportedLanguage } from '../types';
 
 /**
  * Maps VSCode language IDs to our supported languages

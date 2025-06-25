@@ -1,11 +1,11 @@
 import * as vscode from 'vscode';
-import { DocstringDetector } from '@/detectors/docstringDetector';
-import { DocuFoldRangeProvider } from '@/providers/foldingRangeProvider';
-import { DocuFoldHoverProvider } from '@/providers/hoverProvider';
-import { ConfigurationService } from '@/services/configurationService';
-import { StatusBarService } from '@/services/statusBarService';
-import { FoldingCommands } from '@/commands/foldingCommands';
-import { getSupportedLanguageIds } from '@/utils/languageUtils';
+import { DocstringDetector } from './detectors/docstringDetector';
+import { DocuFoldRangeProvider } from './providers/foldingRangeProvider';
+import { DocuFoldHoverProvider } from './providers/hoverProvider';
+import { ConfigurationService } from './services/configurationService';
+import { StatusBarService } from './services/statusBarService';
+import { FoldingCommands } from './commands/foldingCommands';
+import { getSupportedLanguageIds } from './utils/languageUtils';
 
 let statusBarService: StatusBarService | undefined;
 
