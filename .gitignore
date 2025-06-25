@@ -60,7 +60,7 @@ Thumbs.db
 
 # Package manager files
 yarn.lock
-package-lock.json
+# package-lock.json
 
 # TypeScript incremental compilation
 *.tsbuildinfo
