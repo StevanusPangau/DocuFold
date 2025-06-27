@@ -359,7 +359,7 @@
     }
   },
   "scripts": {
-    "vscode:prepublish": "npm run package",
+    "vscode:prepublish": "npm run build",
     "compile": "npm run build",
     "build": "node esbuild.js",
     "build:watch": "node esbuild.js --watch",
